@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+class ProprietaireController extends AbstractController
+{
+    #[Route('/proprietaire', name: 'app_proprietaire_home', methods: ['GET'])]
+    #[IsGranted('ROLE_PROPRIETAIRE')]
+    public function index(): Response
+    {
+        return $this->render('proprietaire/index.html.twig');
+    }
+}
+

@@ -1,0 +1,131 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier {{ user.email }} — Admin GESTLOYER{% endblock %}
+
+{% block body %}
+<div class="min-h-screen themed-page flex flex-col items-center justify-center py-12 bg-slate-50 dark:bg-slate-950">
+    <div class="w-full max-w-lg px-4">
+
+        <div class="rounded-2xl p-8 mb-6" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-2xl font-bold text-white mb-4 shadow-lg shadow-indigo-500/20"
+                     style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                    {{ user.email|first|upper }}
+                </div>
+                <h1 class="text-2xl font-bold text-white tracking-tight">Modifier l'utilisateur</h1>
+                <p class="text-slate-400 text-sm mt-1.5">{{ user.email }}</p>
+            </div>
+
+            <form method="POST" action="{{ path('app_admin_user_edit', {id: user.id}) }}" class="space-y-5">
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Adresse email</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" /></svg>
+                        </div>
+                        <input type="email" name="email" value="{{ user.email }}" required
+                               class="block w-full pl-10 pr-3 py-3 rounded-xl text-white text-sm transition focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                               style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">
+                        Nouveau mot de passe <span class="text-slate-500 font-normal">(laisser vide pour ne pas changer)</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        </div>
+                        <input type="password" name="password" minlength="6"
+                               class="block w-full pl-10 pr-3 py-3 rounded-xl text-white text-sm transition focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                               style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);"
+                               placeholder="Nouveau mot de passe...">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Rôle</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>
+                        </div>
+                        <select name="role" required
+                                class="block w-full pl-10 pr-10 py-3 rounded-xl text-white text-sm transition focus:outline-none focus:ring-1 focus:ring-indigo-500 appearance-none"
+                                style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
+                            {% for r in roles %}
+                                <option class="bg-slate-800" value="{{ r.value }}" {% if user.role == r %}selected{% endif %}>
+                                    {{ r.value|replace({'ROLE_': ''}) }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 p-4 rounded-xl mt-6 transition-colors border border-transparent hover:border-white/5" style="background: rgba(255,255,255,0.04);">
+                    <input type="checkbox" name="isActive" value="1" id="isActive"
+                           {% if user.isIsActive %}checked{% endif %}
+                           class="w-4 h-4 rounded border-gray-300 text-indigo-500 focus:ring-indigo-500" style="background: rgba(255,255,255,0.1);">
+                    <label for="isActive" class="text-sm font-medium text-slate-300 cursor-pointer">Compte actif</label>
+                </div>
+
+                <div class="flex gap-4 pt-4 mt-6 border-t" style="border-color: rgba(255,255,255,0.08);">
+                    <a href="{{ path('app_admin_users') }}"
+                       class="flex-1 px-4 py-3 rounded-xl text-sm font-medium text-center text-slate-300 hover:text-white transition-all border border-white/10 hover:border-white/20 hover:bg-white/5">
+                        Annuler
+                    </a>
+                    <button type="submit"
+                            class="flex-1 px-4 py-3 rounded-xl text-sm font-medium text-white transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                            style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                        </svg>
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {# Zone danger #}
+        {% if user != app.user %}
+        <div class="rounded-2xl p-6" style="background: rgba(244,63,94,0.05); border: 1px solid rgba(244,63,94,0.2);">
+            <div class="flex items-center gap-2 mb-4 text-rose-400 font-medium">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Zone dangereuse
+            </div>
+            <p class="text-xs text-rose-300/80 mb-4">Cette action archive le compte (desactivation) sans suppression definitive des donnees.</p>
+            <form method="POST" action="{{ path('app_admin_user_delete', {id: user.id}) }}"
+                  onsubmit="return confirm('Archiver ce compte ? Le compte sera desactive.')">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                <button type="submit"
+                        class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-rose-300 hover:text-white transition-all border border-rose-500/30 hover:bg-rose-500/20"
+                        style="background: rgba(244,63,94,0.1);">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                    </svg>
+                    Archiver ce compte
+                </button>
+            </form>
+
+            <form method="POST" action="{{ path('app_admin_user_reset_password', {id: user.id}) }}"
+                  class="mt-3"
+                  onsubmit="return confirm('Reinitialiser le mot de passe de ce compte ?')">
+                <input type="hidden" name="_token" value="{{ csrf_token('reset_password' ~ user.id) }}">
+                <button type="submit"
+                        class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-indigo-300 hover:text-white transition-all border border-indigo-500/30 hover:bg-indigo-500/20"
+                        style="background: rgba(99,102,241,0.1);">
+                    Reset mot de passe
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

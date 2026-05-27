@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Incident #{{ incident.id }} — GESTLOYER{% endblock %}
+
+{% block body %}
+<div class="min-h-screen themed-page" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+
+        <div class="flex items-center justify-between mb-6">
+            <a href="{{ path('app_incident_index') }}" class="text-gray-400 hover:text-white text-sm">← Retour aux incidents</a>
+            {% if is_granted('ROLE_ADMIN') %}
+            <form method="POST" action="{{ path('app_incident_delete', {id: incident.id}) }}"
+                  onsubmit="return confirm('Supprimer cet incident définitivement ?')">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ incident.id) }}">
+                <button type="submit" class="text-sm px-4 py-2 rounded-lg text-red-300"
+                        style="background: rgba(239,68,68,0.15);">🗑️ Supprimer</button>
+            </form>
+            {% endif %}
+        </div>
+
+        {% set p_colors = {'URGENT': '#ef4444', 'NORMAL': '#f59e0b', 'FAIBLE': '#10b981'} %}
+        {% set s_colors = {'DECLARE': '#f59e0b', 'EN_COURS': '#3b82f6', 'DEVIS_SOUMIS': '#8b5cf6', 'APPROUVE': '#0ea5e9', 'RESOLU': '#10b981', 'CLOTURE': '#64748b'} %}
+        {% set pc = p_colors[incident.priorite.value] ?? '#64748b' %}
+        {% set sc = s_colors[incident.statut.value] ?? '#64748b' %}
+
+        <div class="rounded-2xl p-8" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+            <div class="flex items-start justify-between mb-6">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs px-2 py-1 rounded-full" style="background: {{ pc }}22; color: {{ pc }};">{{ incident.priorite.value }}</span>
+                        <span class="text-xs px-2 py-1 rounded-full" style="background: {{ sc }}22; color: {{ sc }};">{{ incident.statut.value }}</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-white">{{ incident.titre }}</h1>
+                    <p class="text-gray-400 text-sm mt-1">
+                        Déclaré par {{ incident.declarant ? incident.declarant.email : 'N/A' }}
+                        le {{ incident.dateDeclaration ? incident.dateDeclaration|date('d/m/Y à H:i') : 'N/A' }}
+                    </p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-400">Bien concerné</div>
+                    <div class="text-white font-medium">{{ incident.bien ? incident.bien.adresse : 'N/A' }}</div>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-xl mb-6" style="background: rgba(255,255,255,0.05);">
+                <p class="text-gray-300 text-sm leading-relaxed">{{ incident.description }}</p>
+            </div>
+
+            {# Changement de statut — Gestionnaire/Admin uniquement #}
+            {% if is_granted('ROLE_GESTIONNAIRE') %}
+            <div class="border-t border-gray-700 pt-6">
+                <h2 class="text-sm font-semibold text-gray-400 mb-4 uppercase tracking-wider">Mettre à jour le statut</h2>
+                <form method="POST" action="{{ path('app_incident_change_statut', {id: incident.id}) }}" class="flex items-center gap-4">
+                    <input type="hidden" name="_token" value="{{ csrf_token('statut' ~ incident.id) }}">
+                    <select name="statut" class="px-4 py-2 rounded-xl text-sm text-white"
+                            style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);">
+                        {% for s in statuts %}
+                        <option value="{{ s.value }}" {% if incident.statut == s %}selected{% endif %}>
+                            {{ s.value }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="px-6 py-2 rounded-xl text-sm font-medium text-white"
+                            style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                        ✓ Mettre à jour
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+            {# Devis #}
+            {% if incident.devis|length > 0 %}
+            <div class="mt-6 border-t border-gray-700 pt-6">
+                <h2 class="text-sm font-semibold text-gray-400 mb-4 uppercase tracking-wider">Devis associés ({{ incident.devis|length }})</h2>
+                {% for devis in incident.devis %}
+                <div class="p-3 rounded-lg mb-2" style="background: rgba(255,255,255,0.05);">
+                    <div class="flex justify-between">
+                        <span class="text-sm text-white">{{ devis.description ?? 'Devis #' ~ devis.id }}</span>
+                        <span class="text-sm font-bold text-green-400">{{ devis.montant ?? '?' }} GNF</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

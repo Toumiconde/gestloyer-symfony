@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription | GESTLOYER{% endblock %}
+
+{% block body %}
+<div class="min-h-[80vh] flex items-center py-10">
+    <div class="w-full grid grid-cols-1 lg:grid-cols-5 rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-white/10">
+        <section class="hidden lg:flex lg:col-span-3 flex-col justify-between bg-gradient-to-br from-slate-900 via-slate-800 to-fuchsia-700 text-white p-10">
+            <div>
+                <h2 class="text-4xl font-extrabold tracking-tight">
+                    GEST<span class="text-fuchsia-300">LOYER</span>
+                </h2>
+                <p class="mt-3 text-sm text-slate-200">
+                    Crée ton compte pour accéder à ton espace.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+                    <p class="text-sm font-semibold">Locataire</p>
+                    <p class="text-xs text-slate-200 mt-1">Consulte tes paiements, incidents et documents.</p>
+                </div>
+                <div class="rounded-xl bg-white/10 border border-white/15 p-4">
+                    <p class="text-sm font-semibold">Propriétaire</p>
+                    <p class="text-xs text-slate-200 mt-1">Suis tes biens, contrats et reversements.</p>
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-300">
+                Support: support@gestloyer.com
+            </p>
+        </section>
+
+        <section class="lg:col-span-2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-6 sm:p-10">
+            <div class="max-w-md mx-auto">
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                    Inscription
+                </h1>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    Crée un compte en choisissant ton profil.
+                </p>
+
+                <form class="space-y-5 mt-8" method="post" action="{{ path('app_register') }}">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Type de compte</label>
+                        <div class="mt-2 grid grid-cols-2 gap-3">
+                            <label class="cursor-pointer rounded-xl border border-gray-200 dark:border-white/10 px-4 py-3 hover:border-fuchsia-400/60 transition">
+                                <input type="radio" name="type" value="locataire" class="mr-2" required>
+                                <span class="text-sm font-semibold text-gray-900 dark:text-white">Locataire</span>
+                            </label>
+                            <label class="cursor-pointer rounded-xl border border-gray-200 dark:border-white/10 px-4 py-3 hover:border-fuchsia-400/60 transition">
+                                <input type="radio" name="type" value="proprietaire" class="mr-2" required>
+                                <span class="text-sm font-semibold text-gray-900 dark:text-white">Propriétaire</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="regEmail" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Adresse Email</label>
+                        <div class="mt-1">
+                            <input id="regEmail" name="email" type="email" autocomplete="email" required
+                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-white/20 dark:bg-slate-700 dark:text-white rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-fuchsia-500 focus:border-fuchsia-500 sm:text-sm transition-colors">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="regPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Mot de passe</label>
+                        <div class="mt-1">
+                            <input id="regPassword" name="password" type="password" autocomplete="new-password" required
+                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-white/20 dark:bg-slate-700 dark:text-white rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-fuchsia-500 focus:border-fuchsia-500 sm:text-sm transition-colors">
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Minimum 6 caractères.</p>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full flex justify-center py-2.5 px-4 rounded-lg text-sm font-semibold text-white bg-fuchsia-600 hover:bg-fuchsia-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fuchsia-500 transition">
+                        Créer mon compte
+                    </button>
+
+                    <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                        Déjà un compte ?
+                        <a href="{{ path('app_login') }}" class="font-semibold text-fuchsia-600 hover:text-fuchsia-500">Se connecter</a>
+                    </p>
+                </form>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+

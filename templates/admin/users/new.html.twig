@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel Utilisateur — Admin GESTLOYER{% endblock %}
+
+{% block body %}
+<div class="min-h-screen themed-page flex flex-col items-center justify-center py-12 bg-slate-50 dark:bg-slate-950">
+    <div class="w-full max-w-lg px-4">
+
+        <div class="rounded-2xl p-8" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                    <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-white tracking-tight">Créer un utilisateur</h1>
+                <p class="text-slate-400 text-sm mt-1.5">Remplissez les informations du nouveau compte</p>
+            </div>
+
+            <form method="POST" action="{{ path('app_admin_user_new') }}" class="space-y-5">
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Adresse email <span class="text-rose-400">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" /></svg>
+                        </div>
+                        <input type="email" name="email" required autocomplete="off"
+                               class="block w-full pl-10 pr-3 py-3 rounded-xl text-white text-sm transition focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                               style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);"
+                               placeholder="utilisateur@gestloyer.com">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Mot de passe <span class="text-rose-400">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        </div>
+                        <input type="password" name="password" required minlength="6"
+                               class="block w-full pl-10 pr-3 py-3 rounded-xl text-white text-sm transition focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                               style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);"
+                               placeholder="Minimum 6 caractères">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Rôle <span class="text-rose-400">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>
+                        </div>
+                        <select name="role" required
+                                class="block w-full pl-10 pr-10 py-3 rounded-xl text-white text-sm transition focus:outline-none focus:ring-1 focus:ring-indigo-500 appearance-none"
+                                style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
+                            {% for r in roles %}
+                                <option class="bg-slate-800" value="{{ r.value }}">{{ r.value|replace({'ROLE_': ''}) }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 p-4 rounded-xl mt-6 transition-colors border border-transparent hover:border-white/5" style="background: rgba(255,255,255,0.04);">
+                    <input type="checkbox" name="isActive" value="1" id="isActive" checked
+                           class="w-4 h-4 rounded border-gray-300 text-indigo-500 focus:ring-indigo-500" style="background: rgba(255,255,255,0.1);">
+                    <label for="isActive" class="text-sm font-medium text-slate-300 cursor-pointer">Compte actif immédiatement</label>
+                </div>
+
+                <div class="flex gap-4 pt-4 mt-6 border-t" style="border-color: rgba(255,255,255,0.08);">
+                    <a href="{{ path('app_admin_users') }}"
+                       class="flex-1 px-4 py-3 rounded-xl text-sm font-medium text-center text-slate-300 hover:text-white transition-all border border-white/10 hover:border-white/20 hover:bg-white/5">
+                        Annuler
+                    </a>
+                    <button type="submit"
+                            class="flex-1 px-4 py-3 rounded-xl text-sm font-medium text-white transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                            style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        Créer le compte
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

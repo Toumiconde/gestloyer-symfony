@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail Contrat {{ contrat.numero }} — GESTLOYER{% endblock %}
+
+{% block body %}
+<div class="min-h-screen themed-page" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+
+        <div class="flex items-center justify-between mb-6">
+            <a href="{{ path('app_contrat_index') }}" class="text-gray-400 hover:text-white text-sm">← Retour aux contrats</a>
+            {% if is_granted('ROLE_ADMIN') %}
+            <form method="POST" action="{{ path('app_contrat_delete', {id: contrat.id}) }}"
+                  onsubmit="return confirm('Supprimer définitivement ce contrat ?')">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ contrat.id) }}">
+                <button type="submit" class="text-sm px-4 py-2 rounded-lg text-red-300 hover:text-white"
+                        style="background: rgba(239,68,68,0.15);">🗑️ Supprimer</button>
+            </form>
+            {% endif %}
+        </div>
+
+        {% set statut_color = {
+            'ACTIF': '#10b981', 'EN_ATTENTE': '#f59e0b', 'RESILIE': '#ef4444', 'EXPIRE': '#64748b'
+        } %}
+        {% set color = statut_color[contrat.statut.value] ?? '#64748b' %}
+
+        <div class="rounded-2xl p-8" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+            <div class="flex items-start justify-between mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">{{ contrat.numero }}</h1>
+                    <p class="text-gray-400 text-sm mt-1">Contrat de location</p>
+                </div>
+                <span class="text-sm px-4 py-2 rounded-full font-medium"
+                      style="background: {{ color }}22; color: {{ color }};">
+                    {{ contrat.statut.value }}
+                </span>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Informations</h2>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-400">Bien</span>
+                            <span class="text-sm text-white font-medium">{{ contrat.bien ? contrat.bien.adresse : 'N/A' }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-400">Locataire</span>
+                            <span class="text-sm text-white font-medium">{{ contrat.locataire ? contrat.locataire.email : 'N/A' }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-400">Début</span>
+                            <span class="text-sm text-white font-medium">{{ contrat.dateDebut ? contrat.dateDebut|date('d/m/Y') : 'N/A' }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-400">Fin</span>
+                            <span class="text-sm text-white font-medium">{{ contrat.dateFin ? contrat.dateFin|date('d/m/Y') : 'Indéterminée' }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-400">Loyer mensuel</span>
+                            <span class="text-sm font-bold text-green-400">{{ contrat.loyerMensuel|number_format(0, ',', ' ') }} GNF</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-400">Caution</span>
+                            <span class="text-sm text-white font-medium">{{ contrat.caution|number_format(0, ',', ' ') }} GNF</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Paiements ({{ contrat.paiements|length }})</h2>
+                    <div class="space-y-2 max-h-64 overflow-y-auto">
+                        {% for paiement in contrat.paiements %}
+                        {% set p_colors = {'VALIDE': '#10b981', 'EN_ATTENTE': '#f59e0b', 'PARTIEL': '#3b82f6', 'ANNULE': '#ef4444'} %}
+                        {% set pc = p_colors[paiement.statut.value] ?? '#64748b' %}
+                        <div class="flex items-center justify-between p-3 rounded-lg"
+                             style="background: rgba(255,255,255,0.05);">
+                            <span class="text-sm text-gray-300">{{ paiement.mois ? paiement.mois|date('M Y') : '?' }}</span>
+                            <span class="text-xs font-medium" style="color: {{ pc }};">{{ paiement.statut.value }}</span>
+                            <span class="text-sm text-white">{{ paiement.montantVerse|number_format(0,',','') }} / {{ paiement.montantDu|number_format(0,',','') }} GNF</span>
+                        </div>
+                        {% else %}
+                        <p class="text-sm text-gray-500">Aucun paiement enregistré.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            {% if is_granted('ROLE_GESTIONNAIRE') and contrat.statut.value == 'ACTIF' %}
+            <div class="mt-8 pt-6 border-t border-gray-700 flex justify-end">
+                <form method="POST" action="{{ path('app_contrat_resilier', {id: contrat.id}) }}"
+                      onsubmit="return confirm('Résilier ce contrat définitivement ?')">
+                    <input type="hidden" name="_token" value="{{ csrf_token('resilier' ~ contrat.id) }}">
+                    <button type="submit"
+                            class="px-6 py-3 rounded-xl text-sm font-medium text-white"
+                            style="background: linear-gradient(135deg, #f97316, #ef4444);">
+                        ⚠️ Résilier ce contrat
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

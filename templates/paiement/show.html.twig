@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement {{ paiement.mois ? paiement.mois|date('M Y') : '#' ~ paiement.id }} — GESTLOYER{% endblock %}
+
+{% block body %}
+<div class="min-h-screen themed-page" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+    <div class="max-w-3xl mx-auto px-4 py-8">
+
+        <div class="flex items-center justify-between mb-6">
+            <a href="{{ path('app_paiement_index') }}" class="text-gray-400 hover:text-white text-sm">← Retour aux paiements</a>
+            {% if is_granted('ROLE_ADMIN') %}
+            <form method="POST" action="{{ path('app_paiement_delete', {id: paiement.id}) }}"
+                  onsubmit="return confirm('Supprimer définitivement ce paiement ?')">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ paiement.id) }}">
+                <button type="submit" class="text-sm px-4 py-2 rounded-lg text-red-300" style="background: rgba(239,68,68,0.15);">
+                    🗑️ Supprimer
+                </button>
+            </form>
+            {% endif %}
+        </div>
+
+        {% set s_colors = {'VALIDE': '#10b981', 'EN_ATTENTE': '#f59e0b', 'PARTIEL': '#3b82f6', 'ANNULE': '#ef4444'} %}
+        {% set sc = s_colors[paiement.statut.value] ?? '#64748b' %}
+
+        <div class="rounded-2xl p-8" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+            <div class="flex items-start justify-between mb-8">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">
+                        Paiement — {{ paiement.mois ? paiement.mois|date('F Y')|capitalize : 'N/A' }}
+                    </h1>
+                    <p class="text-gray-400 text-sm mt-1">Contrat : {{ paiement.contrat ? paiement.contrat.numero : 'N/A' }}</p>
+                </div>
+                <span class="text-sm px-4 py-2 rounded-full font-medium"
+                      style="background: {{ sc }}22; color: {{ sc }};">{{ paiement.statut.value }}</span>
+            </div>
+
+            {# Barre de progression #}
+            {% set pct = paiement.montantDu > 0 ? [(paiement.montantVerse / paiement.montantDu * 100), 100]|min : 0 %}
+            <div class="mb-8">
+                <div class="flex justify-between text-sm text-gray-400 mb-2">
+                    <span>Progression du paiement</span>
+                    <span>{{ pct|round }}%</span>
+                </div>
+                <div class="h-3 rounded-full overflow-hidden" style="background: rgba(255,255,255,0.1);">
+                    <div class="h-full rounded-full transition-all" style="width: {{ pct }}%; background: linear-gradient(90deg, #6366f1, #10b981);"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>Versé : {{ paiement.montantVerse|number_format(0, ',', ' ') }} GNF</span>
+                    <span>Dû : {{ paiement.montantDu|number_format(0, ',', ' ') }} GNF</span>
+                </div>
+            </div>
+
+            {# Détails #}
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div class="space-y-3">
+                    <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Informations contrat</h2>
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-400">Locataire</span>
+                        <span class="text-sm text-white">{{ paiement.contrat ? paiement.contrat.locataire.email : 'N/A' }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-400">Bien</span>
+                        <span class="text-sm text-white">{{ paiement.contrat and paiement.contrat.bien ? paiement.contrat.bien.adresse : 'N/A' }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-400">Solde restant</span>
+                        <span class="text-sm font-bold text-red-400">{{ paiement.solde|number_format(0, ',', ' ') }} GNF</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Versements ({{ paiement.versements|length }})</h2>
+                    {% for versement in paiement.versements %}
+                    <div class="flex justify-between p-2 rounded-lg" style="background: rgba(255,255,255,0.05);">
+                        <span class="text-xs text-gray-400">{{ versement.dateVersement ? versement.dateVersement|date('d/m/Y') : '' }}</span>
+                        <span class="text-sm font-medium text-green-400">{{ versement.montant|number_format(0, ',', ' ') }} GNF</span>
+                    </div>
+                    {% else %}
+                    <p class="text-sm text-gray-500">Aucun versement enregistré.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {# Actions #}
+            <div class="border-t border-gray-700 pt-6 flex gap-3 flex-wrap">
+                {% if is_granted('ROLE_COMPTABLE') and paiement.statut.value == 'EN_ATTENTE' %}
+                <form method="POST" action="{{ path('app_paiement_valider', {id: paiement.id}) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('valider' ~ paiement.id) }}">
+                    <button type="submit" class="px-6 py-3 rounded-xl text-sm font-medium text-white"
+                            style="background: linear-gradient(135deg, #10b981, #059669);">
+                        ✅ Valider ce paiement
+                    </button>
+                </form>
+                {% endif %}
+
+                {% if is_granted('ROLE_ADMIN') %}
+                <form method="POST" action="{{ path('app_paiement_annuler', {id: paiement.id}) }}"
+                      onsubmit="return confirm('Annuler ce paiement et remettre le montant versé à 0 ?')">
+                    <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ paiement.id) }}">
+                    <button type="submit" class="px-6 py-3 rounded-xl text-sm font-medium text-white"
+                            style="background: linear-gradient(135deg, #f97316, #ef4444);">
+                        ↩ Annuler le paiement
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
