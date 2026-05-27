@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Bien;
+use App\Enum\RoleUtilisateur;
 use App\Form\BienType;
 use App\Repository\BienRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,8 +20,25 @@ class BienController extends AbstractController
     #[Route('/', name: 'app_bien_index', methods: ['GET'])]
     public function index(BienRepository $bienRepository): Response
     {
-        // En vrai, il faudrait filtrer selon les permissions via le Repository et BienVoter
-        $biens = $bienRepository->findAll();
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        $isAdmin = in_array('ROLE_ADMIN', $user->getRoles());
+
+        $qb = $bienRepository->createQueryBuilder('b')
+            ->leftJoin('b.proprietaire', 'p')
+            ->orderBy('b.id', 'DESC');
+
+        if (!$isAdmin && !in_array($user->getRole(), [RoleUtilisateur::GESTIONNAIRE, RoleUtilisateur::COMPTABLE])) {
+            if ($user->getRole() === RoleUtilisateur::PROPRIETAIRE && $user->getProprietaire()) {
+                $qb->where('b.proprietaire = :prop')->setParameter('prop', $user->getProprietaire());
+            } elseif ($user->getRole() === RoleUtilisateur::LOCATAIRE) {
+                $qb->leftJoin('b.contrats', 'c')
+                    ->where('c.locataire = :user')
+                    ->setParameter('user', $user);
+            }
+        }
+
+        $biens = $qb->getQuery()->getResult();
 
         return $this->render('bien/index.html.twig', [
             'biens' => $biens,

@@ -13,6 +13,7 @@
             </div>
 
             <form method="POST" action="{{ path('app_incident_new') }}" class="space-y-5">
+                <input type="hidden" name="_token" value="{{ csrf_token('incident_new') }}">
 
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">Titre *</label>

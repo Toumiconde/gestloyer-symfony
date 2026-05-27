@@ -70,14 +70,36 @@ class IncidentController extends AbstractController
         BienRepository $bienRepository
     ): Response {
         if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('incident_new', $request->request->get('_token'))) {
+                $this->addFlash('error', 'Token CSRF invalide.');
+                return $this->redirectToRoute('app_incident_new');
+            }
+
             /** @var \App\Entity\User $user */
             $user = $this->getUser();
 
+            $titre = trim((string) $request->request->get('titre'));
+            $description = trim((string) $request->request->get('description'));
+            $prioriteStr = $request->request->get('priorite');
+            $bien = $bienRepository->find($request->request->get('bien_id'));
+
+            if ($titre === '' || $description === '' || !$prioriteStr || !$bien) {
+                $this->addFlash('error', 'Tous les champs obligatoires doivent être renseignés.');
+                return $this->redirectToRoute('app_incident_new');
+            }
+
+            try {
+                $priorite = PrioriteIncident::from($prioriteStr);
+            } catch (\ValueError) {
+                $this->addFlash('error', 'Priorité invalide.');
+                return $this->redirectToRoute('app_incident_new');
+            }
+
             $incident = new Incident();
-            $incident->setTitre($request->request->get('titre'));
-            $incident->setDescription($request->request->get('description'));
-            $incident->setPriorite(PrioriteIncident::from($request->request->get('priorite')));
-            $incident->setBien($bienRepository->find($request->request->get('bien_id')));
+            $incident->setTitre($titre);
+            $incident->setDescription($description);
+            $incident->setPriorite($priorite);
+            $incident->setBien($bien);
             $incident->setDeclarant($user);
             $incident->setStatut(StatutIncident::DECLARE);
 

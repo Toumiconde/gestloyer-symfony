@@ -12,6 +12,7 @@
             </div>
 
             <form method="POST" action="{{ path('app_contrat_new') }}" class="space-y-5">
+                <input type="hidden" name="_token" value="{{ csrf_token('contrat_new') }}">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="col-span-2">
                         <label class="block text-sm font-medium text-gray-300 mb-2">Bien immobilier *</label>

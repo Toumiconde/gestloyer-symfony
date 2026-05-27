@@ -67,19 +67,57 @@ class ContratController extends AbstractController
         UserRepository $userRepository
     ): Response {
         if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('contrat_new', $request->request->get('_token'))) {
+                $this->addFlash('error', 'Token CSRF invalide.');
+                return $this->redirectToRoute('app_contrat_new');
+            }
+
+            $bien = $bienRepository->find($request->request->get('bien_id'));
+            $locataire = $userRepository->find($request->request->get('locataire_id'));
+            $dateDebutStr = $request->request->get('dateDebut');
+            $loyerMensuel = $request->request->get('loyerMensuel');
+            $caution = $request->request->get('caution');
+
+            if (!$bien || !$locataire || !$dateDebutStr || $loyerMensuel === null || $caution === null) {
+                $this->addFlash('error', 'Tous les champs obligatoires doivent être renseignés.');
+                return $this->redirectToRoute('app_contrat_new');
+            }
+
+            if (!is_numeric($loyerMensuel) || (float) $loyerMensuel < 0) {
+                $this->addFlash('error', 'Le loyer mensuel doit être un nombre positif.');
+                return $this->redirectToRoute('app_contrat_new');
+            }
+
+            if (!is_numeric($caution) || (float) $caution < 0) {
+                $this->addFlash('error', 'La caution doit être un nombre positif.');
+                return $this->redirectToRoute('app_contrat_new');
+            }
+
+            try {
+                $dateDebut = new \DateTimeImmutable($dateDebutStr);
+            } catch (\Exception) {
+                $this->addFlash('error', 'Date de début invalide.');
+                return $this->redirectToRoute('app_contrat_new');
+            }
+
             $contrat = new Contrat();
             $contrat->setNumero('CONT-' . strtoupper(uniqid()));
-            $contrat->setBien($bienRepository->find($request->request->get('bien_id')));
-            $contrat->setLocataire($userRepository->find($request->request->get('locataire_id')));
-            $contrat->setDateDebut(new \DateTimeImmutable($request->request->get('dateDebut')));
+            $contrat->setBien($bien);
+            $contrat->setLocataire($locataire);
+            $contrat->setDateDebut($dateDebut);
 
             $dateFin = $request->request->get('dateFin');
             if ($dateFin) {
-                $contrat->setDateFin(new \DateTimeImmutable($dateFin));
+                try {
+                    $contrat->setDateFin(new \DateTimeImmutable($dateFin));
+                } catch (\Exception) {
+                    $this->addFlash('error', 'Date de fin invalide.');
+                    return $this->redirectToRoute('app_contrat_new');
+                }
             }
 
-            $contrat->setLoyerMensuel($request->request->get('loyerMensuel'));
-            $contrat->setCaution($request->request->get('caution'));
+            $contrat->setLoyerMensuel($loyerMensuel);
+            $contrat->setCaution($caution);
             $contrat->setStatut(StatutContrat::ACTIF);
 
             $em->persist($contrat);
