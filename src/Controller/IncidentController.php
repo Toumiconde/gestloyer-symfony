@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/incidents')]
@@ -24,7 +24,7 @@ class IncidentController extends AbstractController
     {
         /** @var \App\Entity\User $user */
         $user    = $this->getUser();
-        $isAdmin = in_array('ROLE_ADMIN', $user->getRoles());
+        $isAdmin = \in_array('ROLE_ADMIN', $user->getRoles());
 
         $qb = $incidentRepository->createQueryBuilder('i')
             ->leftJoin('i.bien', 'b')
@@ -32,7 +32,7 @@ class IncidentController extends AbstractController
             ->orderBy('i.dateDeclaration', 'DESC');
 
         // Locataires et propriétaires ne voient que leurs incidents
-        if (!$isAdmin && !in_array($user->getRole(), [RoleUtilisateur::GESTIONNAIRE, RoleUtilisateur::COMPTABLE])) {
+        if (!$isAdmin && !\in_array($user->getRole(), [RoleUtilisateur::GESTIONNAIRE, RoleUtilisateur::COMPTABLE])) {
             if ($user->getRole() === RoleUtilisateur::LOCATAIRE) {
                 $qb->where('i.declarant = :user')->setParameter('user', $user);
             } elseif ($user->getRole() === RoleUtilisateur::PROPRIETAIRE && $user->getProprietaire()) {
@@ -45,10 +45,16 @@ class IncidentController extends AbstractController
         $priorite = $request->query->get('priorite');
 
         if ($statut) {
-            $qb->andWhere('i.statut = :statut')->setParameter('statut', StatutIncident::from($statut));
+            $statutEnum = StatutIncident::tryFrom($statut);
+            if ($statutEnum !== null) {
+                $qb->andWhere('i.statut = :statut')->setParameter('statut', $statutEnum);
+            }
         }
         if ($priorite) {
-            $qb->andWhere('i.priorite = :priorite')->setParameter('priorite', PrioriteIncident::from($priorite));
+            $prioriteEnum = PrioriteIncident::tryFrom($priorite);
+            if ($prioriteEnum !== null) {
+                $qb->andWhere('i.priorite = :priorite')->setParameter('priorite', $prioriteEnum);
+            }
         }
 
         $incidents = $qb->getQuery()->getResult();
@@ -69,14 +75,19 @@ class IncidentController extends AbstractController
         EntityManagerInterface $em,
         BienRepository $bienRepository
     ): Response {
+        // Prevent proprietors from creating incidents
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        if ($user->getRole() === RoleUtilisateur::PROPRIETAIRE) {
+            $this->addFlash('error', 'Les propriétaires ne peuvent pas déclarer d\'incident.');
+            return $this->redirectToRoute('app_dashboard');
+        }
+
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('incident_new', $request->request->get('_token'))) {
                 $this->addFlash('error', 'Token CSRF invalide.');
                 return $this->redirectToRoute('app_incident_new');
             }
-
-            /** @var \App\Entity\User $user */
-            $user = $this->getUser();
 
             $titre = trim((string) $request->request->get('titre'));
             $description = trim((string) $request->request->get('description'));
@@ -110,13 +121,25 @@ class IncidentController extends AbstractController
             return $this->redirectToRoute('app_incident_index');
         }
 
-        $biens = $bienRepository->findAll();
+        if ($user->getRole() === RoleUtilisateur::LOCATAIRE) {
+            $biens = $bienRepository->createQueryBuilder('b')
+                ->join('b.contrats', 'c')
+                ->where('c.locataire = :user')
+                ->andWhere('c.statut = :statut')
+                ->setParameter('user', $user)
+                ->setParameter('statut', \App\Enum\StatutContrat::ACTIF)
+                ->getQuery()
+                ->getResult();
+        } else {
+            $biens = $bienRepository->findAll();
+        }
 
         return $this->render('incident/new.html.twig', [
-            'biens'    => $biens,
+            'biens' => $biens,
             'priorites' => PrioriteIncident::cases(),
         ]);
     }
+    
 
     #[Route('/{id}', name: 'app_incident_show', methods: ['GET'])]
     public function show(Incident $incident): Response
@@ -125,6 +148,94 @@ class IncidentController extends AbstractController
             'incident' => $incident,
             'statuts'  => StatutIncident::cases(),
         ]);
+    }
+
+    #[Route('/{id}/ajouter-devis', name: 'app_incident_add_devis', methods: ['POST'])]
+    #[IsGranted('ROLE_GESTIONNAIRE')]
+    public function ajouterDevis(
+        Incident $incident,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        if (!$this->isCsrfTokenValid('devis'.$incident->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token CSRF invalide.');
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        $montant     = $request->request->get('montant');
+        $prestataire = trim((string) $request->request->get('prestataire'));
+        $description = trim((string) $request->request->get('description'));
+
+        if (!$montant || !$prestataire) {
+            $this->addFlash('error', 'Le montant et le prestataire sont obligatoires.');
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        $devis = new \App\Entity\Devis();
+        $devis->setMontant((string) $montant);
+        $devis->setPrestataire($prestataire);
+        $devis->setDescription($description ?: null);
+        $devis->setStatut('SOUMIS');
+        $devis->setIncident($incident);
+
+        $incident->setStatut(StatutIncident::DEVIS_SOUMIS);
+
+        $em->persist($devis);
+        $em->flush();
+
+        $this->addFlash('success', 'Devis de '.$montant.' GNF soumis par '.$prestataire.' et incident mis en statut DEVIS_SOUMIS.');
+        return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+    }
+
+    #[Route('/{id}/devis/{devisId}/approuver', name: 'app_incident_approve_devis', methods: ['POST'])]
+    #[IsGranted('ROLE_GESTIONNAIRE')]
+    public function approuverDevis(
+        Incident $incident,
+        int $devisId,
+        Request $request,
+        EntityManagerInterface $em,
+        \App\Repository\DevisRepository $devisRepository
+    ): Response {
+        if (!$this->isCsrfTokenValid('approve_devis'.$devisId, $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token CSRF invalide.');
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        $devis = $devisRepository->find($devisId);
+        if (!$devis || $devis->getIncident() !== $incident) {
+            $this->addFlash('error', 'Devis introuvable.');
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        // Rejeter tous les autres devis de cet incident
+        foreach ($incident->getDevis() as $d) {
+            $d->setStatut($d === $devis ? 'APPROUVE' : 'REJETE');
+        }
+
+        $incident->setStatut(StatutIncident::APPROUVE);
+        $em->flush();
+
+        $this->addFlash('success', 'Devis approuvé. Intervention planifiée.');
+        return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+    }
+
+    #[Route('/{id}/cloturer', name: 'app_incident_cloturer', methods: ['POST'])]
+    #[IsGranted('ROLE_GESTIONNAIRE')]
+    public function cloturerIncident(
+        Incident $incident,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        if (!$this->isCsrfTokenValid('cloturer'.$incident->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token CSRF invalide.');
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        $incident->setStatut(StatutIncident::CLOTURE);
+        $em->flush();
+
+        $this->addFlash('success', 'Incident #'.$incident->getId().' clôturé avec succès.');
+        return $this->redirectToRoute('app_incident_index');
     }
 
     #[Route('/{id}/changer-statut', name: 'app_incident_change_statut', methods: ['POST'])]
@@ -136,7 +247,11 @@ class IncidentController extends AbstractController
             return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
         }
 
-        $nouveauStatut = StatutIncident::from($request->request->get('statut'));
+        $nouveauStatut = StatutIncident::tryFrom($request->request->get('statut'));
+        if ($nouveauStatut === null) {
+            $this->addFlash('error', 'Statut invalide.');
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
         $incident->setStatut($nouveauStatut);
         $em->flush();
 

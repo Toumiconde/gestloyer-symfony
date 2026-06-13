@@ -17,7 +17,7 @@ class PaiementVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::VIEW, self::DECLARE, self::VALIDER, self::ANNULER])
+        return \in_array($attribute, [self::VIEW, self::DECLARE, self::VALIDER, self::ANNULER])
             && $subject instanceof Paiement;
     }
 
@@ -38,44 +38,33 @@ class PaiementVoter extends Voter
 
         return match($attribute) {
             self::VIEW => $this->canView($paiement, $user),
-            self::DECLARE => $this->canDeclare($paiement, $user),
-            self::VALIDER => $this->canValider($paiement, $user),
-            self::ANNULER => $this->canAnnuler($paiement, $user),
+            self::DECLARE, self::VALIDER => \in_array($user->getRole(), [RoleUtilisateur::GESTIONNAIRE, RoleUtilisateur::COMPTABLE]),
+            self::ANNULER => false,
             default => false,
         };
     }
 
     private function canView(Paiement $paiement, User $user): bool
     {
-        if (in_array($user->getRole(), [RoleUtilisateur::GESTIONNAIRE, RoleUtilisateur::COMPTABLE])) {
+        if (\in_array($user->getRole(), [RoleUtilisateur::GESTIONNAIRE, RoleUtilisateur::COMPTABLE])) {
             return true;
         }
 
         if ($user->getRole() === RoleUtilisateur::LOCATAIRE) {
-            return $paiement->getContrat()->getLocataire() === $user;
+            $contrat = $paiement->getContrat();
+            return $contrat !== null && $contrat->getLocataire() === $user;
         }
 
         if ($user->getRole() === RoleUtilisateur::PROPRIETAIRE) {
-            return $paiement->getContrat()->getBien()->getProprietaire() === $user->getProprietaire();
+            $contrat = $paiement->getContrat();
+            $userProp = $user->getProprietaire();
+            if ($contrat === null || $userProp === null) {
+                return false;
+            }
+            $bien = $contrat->getBien();
+            return $bien !== null && $bien->getProprietaire() === $userProp;
         }
 
         return false;
-    }
-
-    private function canDeclare(Paiement $paiement, User $user): bool
-    {
-        // Only Gestionnaire and Comptable can declare a payment (or maybe Locataire directly in some configs)
-        return in_array($user->getRole(), [RoleUtilisateur::GESTIONNAIRE, RoleUtilisateur::COMPTABLE]);
-    }
-
-    private function canValider(Paiement $paiement, User $user): bool
-    {
-        // Only Comptable can validate a payment officially
-        return $user->getRole() === RoleUtilisateur::COMPTABLE;
-    }
-
-    private function canAnnuler(Paiement $paiement, User $user): bool
-    {
-        return false; // Reserved to Admin only
     }
 }

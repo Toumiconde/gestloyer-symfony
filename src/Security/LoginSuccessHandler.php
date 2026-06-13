@@ -25,8 +25,9 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         }
 
         return match ($user->getRole()) {
-            RoleUtilisateur::LOCATAIRE => new RedirectResponse($this->router->generate('app_locataire_home')),
-            RoleUtilisateur::PROPRIETAIRE => new RedirectResponse($this->router->generate('app_proprietaire_home')),
+            RoleUtilisateur::LOCATAIRE => new RedirectResponse($this->router->generate('app_dashboard_locataire')),
+            RoleUtilisateur::PROPRIETAIRE => new RedirectResponse($this->router->generate('app_dashboard_proprietaire')),
+            RoleUtilisateur::GESTIONNAIRE => new RedirectResponse($this->router->generate('app_dashboard_gestionnaire')),
             default => new RedirectResponse($this->router->generate('app_dashboard')),
         };
     }

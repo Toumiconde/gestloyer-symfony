@@ -21,7 +21,7 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
@@ -128,7 +128,11 @@ class AdminController extends AbstractController
         if ($request->isMethod('POST')) {
             $email    = trim((string) $request->request->get('email'));
             $password = $request->request->get('password');
-            $role     = RoleUtilisateur::from($request->request->get('role'));
+            $role     = RoleUtilisateur::tryFrom($request->request->get('role'));
+            if ($role === null) {
+                $this->addFlash('error', 'Rôle invalide.');
+                return $this->redirectToRoute('app_admin_user_new');
+            }
             $isActive = (bool) $request->request->get('isActive', true);
 
             if ($email === '' || $password === null || strlen($password) < 6) {
@@ -187,7 +191,11 @@ class AdminController extends AbstractController
     ): Response {
         if ($request->isMethod('POST')) {
             $email = trim((string) $request->request->get('email'));
-            $newRole = RoleUtilisateur::from($request->request->get('role'));
+            $newRole = RoleUtilisateur::tryFrom($request->request->get('role'));
+            if ($newRole === null) {
+                $this->addFlash('error', 'Rôle invalide.');
+                return $this->redirectToRoute('app_admin_user_edit', ['id' => $user->getId()]);
+            }
             $newActive = (bool) $request->request->get('isActive', false);
 
             if ($email === '') {
@@ -296,7 +304,11 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('app_admin_users');
         }
 
-        $newRole = RoleUtilisateur::from($request->request->get('role'));
+        $newRole = RoleUtilisateur::tryFrom($request->request->get('role'));
+        if ($newRole === null) {
+            $this->addFlash('error', 'Rôle invalide.');
+            return $this->redirectToRoute('app_admin_users');
+        }
 
         if (
             $user->getRole() === RoleUtilisateur::ADMIN
@@ -529,13 +541,19 @@ class AdminController extends AbstractController
     #[Route('/historique/{id}', name: 'app_admin_history_show', methods: ['GET'])]
     public function showHistory(\App\Entity\ActivityLog $activityLog, ActivityLogRepository $activityLogRepository): Response
     {
-        $sessionId = $activityLog->getSessionId();
-        $items = $sessionId ? $activityLogRepository->findBySessionId($sessionId) : [$activityLog];
+        $actorEmail = $activityLog->getActorEmail();
+        
+        // On récupère toutes les actions de cet utilisateur
+        $items = [];
+        if ($actorEmail) {
+            $items = $activityLogRepository->findBy(['actorEmail' => $actorEmail], ['createdAt' => 'DESC'], 100);
+        } else {
+            $items = [$activityLog];
+        }
 
         return $this->render('admin/history_show.html.twig', [
             'root' => $activityLog,
             'items' => $items,
-            'sessionId' => $sessionId,
         ]);
     }
 
@@ -611,12 +629,12 @@ class AdminController extends AbstractController
             $users = $userRepository->createQueryBuilder('u')
                 ->where('u.isActive = true')
                 ->andWhere('u.role = :role')
-                ->setParameter('role', \App\Enum\RoleUtilisateur::LOCATAIRE)
+                ->setParameter('role', RoleUtilisateur::LOCATAIRE)
                 ->orderBy('u.id', 'DESC')
                 ->getQuery()->getResult();
 
             foreach ($users as $u) {
-                if ($u instanceof \App\Entity\User && $u->getEmail()) {
+                if ($u instanceof User && $u->getEmail()) {
                     $recipients[] = $u->getEmail();
                 }
             }
@@ -660,7 +678,7 @@ class AdminController extends AbstractController
         $actor = $this->getUser();
         $activityLogService->log(
             action: 'MESSAGE_SEND',
-            actor: $actor instanceof \App\Entity\User ? $actor : null,
+            actor: $actor instanceof User ? $actor : null,
             details: sprintf('mode=%s, sent=%d, failed=%d', $mode, $sent, $failed)
         );
 

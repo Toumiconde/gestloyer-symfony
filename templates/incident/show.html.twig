@@ -3,85 +3,232 @@
 {% block title %}Incident #{{ incident.id }} — GESTLOYER{% endblock %}
 
 {% block body %}
-<div class="min-h-screen themed-page" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
-    <div class="max-w-4xl mx-auto px-4 py-8">
+<div class="min-h-screen bg-gray-50 dark:bg-slate-900 pb-12">
+    <div class="max-w-5xl mx-auto px-4 py-8">
 
+        {# ── Header ──────────────────────────────────────────────────────── #}
         <div class="flex items-center justify-between mb-6">
-            <a href="{{ path('app_incident_index') }}" class="text-gray-400 hover:text-white text-sm">← Retour aux incidents</a>
-            {% if is_granted('ROLE_ADMIN') %}
-            <form method="POST" action="{{ path('app_incident_delete', {id: incident.id}) }}"
-                  onsubmit="return confirm('Supprimer cet incident définitivement ?')">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ incident.id) }}">
-                <button type="submit" class="text-sm px-4 py-2 rounded-lg text-red-300"
-                        style="background: rgba(239,68,68,0.15);">🗑️ Supprimer</button>
-            </form>
-            {% endif %}
-        </div>
-
-        {% set p_colors = {'URGENT': '#ef4444', 'NORMAL': '#f59e0b', 'FAIBLE': '#10b981'} %}
-        {% set s_colors = {'DECLARE': '#f59e0b', 'EN_COURS': '#3b82f6', 'DEVIS_SOUMIS': '#8b5cf6', 'APPROUVE': '#0ea5e9', 'RESOLU': '#10b981', 'CLOTURE': '#64748b'} %}
-        {% set pc = p_colors[incident.priorite.value] ?? '#64748b' %}
-        {% set sc = s_colors[incident.statut.value] ?? '#64748b' %}
-
-        <div class="rounded-2xl p-8" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-            <div class="flex items-start justify-between mb-6">
-                <div>
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="text-xs px-2 py-1 rounded-full" style="background: {{ pc }}22; color: {{ pc }};">{{ incident.priorite.value }}</span>
-                        <span class="text-xs px-2 py-1 rounded-full" style="background: {{ sc }}22; color: {{ sc }};">{{ incident.statut.value }}</span>
-                    </div>
-                    <h1 class="text-2xl font-bold text-white">{{ incident.titre }}</h1>
-                    <p class="text-gray-400 text-sm mt-1">
-                        Déclaré par {{ incident.declarant ? incident.declarant.email : 'N/A' }}
-                        le {{ incident.dateDeclaration ? incident.dateDeclaration|date('d/m/Y à H:i') : 'N/A' }}
-                    </p>
-                </div>
-                <div class="text-right">
-                    <div class="text-sm text-gray-400">Bien concerné</div>
-                    <div class="text-white font-medium">{{ incident.bien ? incident.bien.adresse : 'N/A' }}</div>
-                </div>
-            </div>
-
-            <div class="p-4 rounded-xl mb-6" style="background: rgba(255,255,255,0.05);">
-                <p class="text-gray-300 text-sm leading-relaxed">{{ incident.description }}</p>
-            </div>
-
-            {# Changement de statut — Gestionnaire/Admin uniquement #}
-            {% if is_granted('ROLE_GESTIONNAIRE') %}
-            <div class="border-t border-gray-700 pt-6">
-                <h2 class="text-sm font-semibold text-gray-400 mb-4 uppercase tracking-wider">Mettre à jour le statut</h2>
-                <form method="POST" action="{{ path('app_incident_change_statut', {id: incident.id}) }}" class="flex items-center gap-4">
-                    <input type="hidden" name="_token" value="{{ csrf_token('statut' ~ incident.id) }}">
-                    <select name="statut" class="px-4 py-2 rounded-xl text-sm text-white"
-                            style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);">
-                        {% for s in statuts %}
-                        <option value="{{ s.value }}" {% if incident.statut == s %}selected{% endif %}>
-                            {{ s.value }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                    <button type="submit" class="px-6 py-2 rounded-xl text-sm font-medium text-white"
-                            style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
-                        ✓ Mettre à jour
+            <a href="{{ path('app_incident_index') }}" 
+               class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Retour aux incidents
+            </a>
+            <div class="flex gap-2">
+                {% if is_granted('ROLE_GESTIONNAIRE') and incident.statut.value not in ['RESOLU', 'CLOTURE'] %}
+                <form method="POST" action="{{ path('app_incident_cloturer', {id: incident.id}) }}"
+                      onsubmit="return confirm('Clôturer cet incident définitivement ?')">
+                    <input type="hidden" name="_token" value="{{ csrf_token('cloturer' ~ incident.id) }}">
+                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition border border-slate-200 dark:border-slate-600">
+                        🔒 Clôturer
                     </button>
                 </form>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                <form method="POST" action="{{ path('app_incident_delete', {id: incident.id}) }}"
+                      onsubmit="return confirm('Supprimer cet incident définitivement ?')">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ incident.id) }}">
+                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-rose-600 bg-rose-50 dark:bg-rose-500/10 rounded-xl hover:bg-rose-100 transition border border-rose-200 dark:border-rose-500/20">
+                        🗑️ Supprimer
+                    </button>
+                </form>
+                {% endif %}
             </div>
-            {% endif %}
+        </div>
 
-            {# Devis #}
-            {% if incident.devis|length > 0 %}
-            <div class="mt-6 border-t border-gray-700 pt-6">
-                <h2 class="text-sm font-semibold text-gray-400 mb-4 uppercase tracking-wider">Devis associés ({{ incident.devis|length }})</h2>
-                {% for devis in incident.devis %}
-                <div class="p-3 rounded-lg mb-2" style="background: rgba(255,255,255,0.05);">
-                    <div class="flex justify-between">
-                        <span class="text-sm text-white">{{ devis.description ?? 'Devis #' ~ devis.id }}</span>
-                        <span class="text-sm font-bold text-green-400">{{ devis.montant ?? '?' }} GNF</span>
+        {% set p_colors = {'URGENT': 'rose', 'NORMAL': 'amber', 'FAIBLE': 'emerald'} %}
+        {% set s_colors = {'DECLARE': 'amber', 'EN_COURS': 'blue', 'DEVIS_SOUMIS': 'purple', 'APPROUVE': 'sky', 'RESOLU': 'emerald', 'CLOTURE': 'slate'} %}
+        {% set pc = p_colors[incident.priorite.value] ?? 'slate' %}
+        {% set sc = s_colors[incident.statut.value] ?? 'slate' %}
+
+        {# ── Fiche Principale ──────────────────────────────────────────── #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden mb-6">
+            {# Bande couleur statut #}
+            <div class="h-1.5 bg-{{ sc }}-500"></div>
+
+            <div class="p-6">
+                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-{{ pc }}-100 dark:bg-{{ pc }}-500/20 text-{{ pc }}-700 dark:text-{{ pc }}-300">
+                                {% if incident.priorite.value == 'URGENT' %}🚨{% elseif incident.priorite.value == 'NORMAL' %}⚠️{% else %}ℹ️{% endif %}
+                                {{ incident.priorite.value }}
+                            </span>
+                            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-{{ sc }}-100 dark:bg-{{ sc }}-500/20 text-{{ sc }}-700 dark:text-{{ sc }}-300">
+                                {{ incident.statut.value }}
+                            </span>
+                            <span class="text-xs text-slate-400">#{{ incident.id }}</span>
+                        </div>
+                        <h1 class="text-2xl font-black text-slate-900 dark:text-white">{{ incident.titre }}</h1>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                            Déclaré par 
+                            <span class="font-medium text-slate-700 dark:text-slate-300">
+                                {% if incident.declarant %}
+                                    {{ ((incident.declarant.nom ?: '') ~ ' ' ~ (incident.declarant.prenom ?: ''))|trim ?: incident.declarant.email }}
+                                {% else %}N/A{% endif %}
+                            </span>
+                            le {{ incident.dateDeclaration ? incident.dateDeclaration|date('d/m/Y à H:i') : 'N/A' }}
+                        </p>
+                    </div>
+                    <div class="flex-shrink-0 bg-slate-50 dark:bg-slate-700/30 rounded-xl p-4 text-sm border border-slate-100 dark:border-slate-600/50">
+                        <p class="text-xs text-slate-500 uppercase font-semibold mb-1">Bien concerné</p>
+                        <p class="font-bold text-slate-900 dark:text-white">{{ incident.bien ? incident.bien.nom : 'N/A' }}</p>
+                        <p class="text-xs text-slate-400">{{ incident.bien ? (incident.bien.emplacement ?: incident.bien.adresse) : '' }}</p>
                     </div>
                 </div>
-                {% endfor %}
+
+                <div class="bg-slate-50 dark:bg-slate-700/20 rounded-xl p-4 border border-slate-100 dark:border-slate-600/30">
+                    <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed whitespace-pre-line">{{ incident.description }}</p>
+                </div>
             </div>
-            {% endif %}
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            {# ── COLONNE GAUCHE : Devis ──────────────────────────────────── #}
+            <div class="space-y-4">
+                
+                {# Liste des devis existants #}
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-5">
+                    <h2 class="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 text-sm">💰</span>
+                        Devis ({{ incident.devis|length }})
+                    </h2>
+
+                    {% if incident.devis|length > 0 %}
+                    <div class="space-y-3">
+                        {% for devis in incident.devis %}
+                        {% set d_color = devis.statut == 'APPROUVE' ? 'emerald' : (devis.statut == 'REJETE' ? 'rose' : 'amber') %}
+                        <div class="p-4 rounded-xl border bg-{{ d_color }}-50 dark:bg-{{ d_color }}-500/5 border-{{ d_color }}-200 dark:border-{{ d_color }}-500/20">
+                            <div class="flex items-start justify-between mb-2">
+                                <div>
+                                    <p class="text-sm font-bold text-slate-900 dark:text-white">{{ devis.prestataire }}</p>
+                                    {% if devis.description %}
+                                    <p class="text-xs text-slate-500 mt-0.5">{{ devis.description }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-base font-black text-{{ d_color }}-600 dark:text-{{ d_color }}-400">{{ devis.montant|number_format(0,',',' ') }} GNF</p>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-{{ d_color }}-100 dark:bg-{{ d_color }}-500/20 text-{{ d_color }}-700 dark:text-{{ d_color }}-300">{{ devis.statut }}</span>
+                                </div>
+                            </div>
+                            {% if is_granted('ROLE_GESTIONNAIRE') and devis.statut == 'SOUMIS' %}
+                            <form method="POST" action="{{ path('app_incident_approve_devis', {id: incident.id, devisId: devis.id}) }}"
+                                  onsubmit="return confirm('Approuver ce devis et rejeter les autres ?')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('approve_devis' ~ devis.id) }}">
+                                <button type="submit" class="w-full mt-2 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition">
+                                    ✓ Approuver ce devis
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-sm text-slate-400 text-center py-4">Aucun devis soumis pour l'instant.</p>
+                    {% endif %}
+                </div>
+
+                {# Formulaire d'ajout de devis #}
+                {% if is_granted('ROLE_GESTIONNAIRE') and incident.statut.value not in ['RESOLU', 'CLOTURE'] %}
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-5">
+                    <h2 class="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-sm">+</span>
+                        Affecter un Devis
+                    </h2>
+                    <form method="POST" action="{{ path('app_incident_add_devis', {id: incident.id}) }}" class="space-y-3">
+                        <input type="hidden" name="_token" value="{{ csrf_token('devis' ~ incident.id) }}">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Prestataire *</label>
+                            <input type="text" name="prestataire" required placeholder="Nom de l'entreprise ou artisan"
+                                   class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Montant (GNF) *</label>
+                            <input type="number" name="montant" required min="0" placeholder="ex: 250000"
+                                   class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Description travaux</label>
+                            <textarea name="description" rows="2" placeholder="Détail des travaux à effectuer..."
+                                      class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-2.5 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition shadow-lg shadow-indigo-600/20">
+                            📋 Soumettre le devis
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+
+            </div>
+
+            {# ── COLONNE DROITE : Statut & Suivi ─────────────────────────── #}
+            <div class="space-y-4">
+
+                {# Suivi Timeline #}
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-5">
+                    <h2 class="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 text-sm">📡</span>
+                        Suivi de l'Intervention
+                    </h2>
+
+                    {% set steps = [
+                        {key: 'DECLARE',      label: 'Incident déclaré',        icon: '📢'},
+                        {key: 'EN_COURS',     label: 'Pris en charge',          icon: '⚙️'},
+                        {key: 'DEVIS_SOUMIS', label: 'Devis soumis',            icon: '💰'},
+                        {key: 'APPROUVE',     label: 'Devis approuvé',          icon: '✅'},
+                        {key: 'RESOLU',       label: 'Incident résolu',          icon: '🎉'},
+                        {key: 'CLOTURE',      label: 'Dossier clôturé',         icon: '🔒'},
+                    ] %}
+
+                    {% set statut_order = {'DECLARE': 0, 'EN_COURS': 1, 'DEVIS_SOUMIS': 2, 'APPROUVE': 3, 'RESOLU': 4, 'CLOTURE': 5} %}
+                    {% set current_order = statut_order[incident.statut.value] ?? 0 %}
+
+                    <div class="space-y-3">
+                    {% for step in steps %}
+                    {% set step_order = statut_order[step.key] ?? 0 %}
+                    {% set done = step_order < current_order %}
+                    {% set active = step.key == incident.statut.value %}
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm
+                            {% if active %}bg-indigo-600 shadow-lg shadow-indigo-600/30
+                            {% elseif done %}bg-emerald-500
+                            {% else %}bg-slate-100 dark:bg-slate-700{% endif %}">
+                            {% if done %}✓{% else %}{{ step.icon }}{% endif %}
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-semibold
+                                {% if active %}text-indigo-600 dark:text-indigo-400
+                                {% elseif done %}text-emerald-600 dark:text-emerald-400
+                                {% else %}text-slate-400 dark:text-slate-500{% endif %}">
+                                {{ step.label }}
+                                {% if active %}<span class="ml-2 text-xs font-normal">(En cours)</span>{% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    </div>
+                </div>
+
+                {# Changement de statut manuel #}
+                {% if is_granted('ROLE_GESTIONNAIRE') and incident.statut.value not in ['CLOTURE'] %}
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-5">
+                    <h2 class="text-base font-bold text-slate-900 dark:text-white mb-4">Mettre à jour le statut</h2>
+                    <form method="POST" action="{{ path('app_incident_change_statut', {id: incident.id}) }}" class="flex gap-2">
+                        <input type="hidden" name="_token" value="{{ csrf_token('statut' ~ incident.id) }}">
+                        <select name="statut" class="flex-1 px-3 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                            {% for s in statuts %}
+                            <option value="{{ s.value }}" {% if incident.statut == s %}selected{% endif %}>{{ s.value }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition">
+                            Valider
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+
+            </div>
+
         </div>
     </div>
 </div>

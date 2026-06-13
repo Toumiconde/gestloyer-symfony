@@ -1,0 +1,48 @@
+{% extends 'base_tenant.html.twig' %}
+
+{% block title %}Recherche de locations{% endblock %}
+
+{% block tenant_content %}
+<div class="max-w-4xl mx-auto py-8">
+    <h2 class="text-2xl font-semibold mb-6 text-gray-800">Rechercher une location</h2>
+    <form method="get" action="{{ path('tenant_search') }}" class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-6 rounded-lg shadow-lg">
+        <div>
+            <label class="block text-sm font-medium text-gray-700" for="city">Ville</label>
+            <input type="text" name="city" id="city" value="{{ criteria.city|default('') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500" placeholder="Ex: Paris" />
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700" for="rooms">Nombre de pièces</label>
+            <input type="number" name="rooms" id="rooms" min="1" value="{{ criteria.rooms|default('') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500" placeholder="Ex: 3" />
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700" for="minPrice">Prix min (€)</label>
+            <input type="number" name="minPrice" id="minPrice" min="0" value="{{ criteria.minPrice|default('') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500" placeholder="Ex: 500" />
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700" for="maxPrice">Prix max (€)</label>
+            <input type="number" name="maxPrice" id="maxPrice" min="0" value="{{ criteria.maxPrice|default('') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500" placeholder="Ex: 2000" />
+        </div>
+        <div class="md:col-span-2 flex justify-end">
+            <button type="submit" class="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded-lg transition-shadow shadow-md hover:shadow-lg">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5h2m-2 4h2m-2 4h2m-5 2h6m-6 2h6"/></svg>
+                Rechercher
+            </button>
+        </div>
+    </form>
+
+    {% if results is defined and results|length > 0 %}
+        <h3 class="mt-8 text-xl font-semibold text-gray-800">Résultats ({{ results|length }})</h3>
+        <div class="grid gap-4 mt-4">
+            {% for bien in results %}
+                <div class="p-4 bg-white rounded-lg shadow hover:shadow-lg transition rounded-lg">
+                    <h4 class="text-lg font-bold text-teal-700">{{ bien.titre|default('Location') }}</h4>
+                    <p class="text-gray-600">{{ bien.adresse }}, {{ bien.codePostal }} {{ bien.city }}</p>
+                    <p class="text-gray-800">{{ bien.prix }} € - {{ bien.nbPieces }} pièces</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% elseif criteria is defined and criteria|length > 0 %}
+        <p class="mt-4 text-gray-600">Aucun bien ne correspond à votre recherche.</p>
+    {% endif %}
+</div>
+{% endblock %}

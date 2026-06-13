@@ -1,0 +1,55 @@
+/* Premium Theme Stylesheet */
+:root {
+  --color-bg-light: #f9fafb;
+  --color-bg-dark: #111827;
+  --color-text-light: #1f2937;
+  --color-text-dark: #f9fafb;
+  --color-primary: #6366f1;
+  --color-primary-dark: #4f46e5;
+  --color-accent: #10b981;
+  --color-accent-dark: #059669;
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-blur: blur(12px);
+}
+[data-theme="light"] {
+  --color-bg: var(--color-bg-light);
+  --color-text: var(--color-text-light);
+}
+[data-theme="dark"] {
+  --color-bg: var(--color-bg-dark);
+  --color-text: var(--color-text-dark);
+  --color-primary: var(--color-primary-dark);
+  --color-accent: var(--color-accent-dark);
+}
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+}
+.dark .glass-panel {
+  background: rgba(30,30,30,0.85);
+  border-color: rgba(255,255,255,0.1);
+}
+.btn-gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+.progress-bar {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  height: 100%;
+  border-radius: 0.25rem;
+  transition: width 0.4s ease;
+}

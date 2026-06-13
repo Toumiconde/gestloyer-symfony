@@ -1,0 +1,180 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil | GESTLOYER - La gestion locative simplifiée{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-slate-50 dark:bg-white dark:bg-slate-900 font-sans text-slate-800 dark:text-slate-100">
+    
+    {# ── HEADER / NAVIGATION ────────────────────────────────────── #}
+    <nav class="absolute top-0 left-0 w-full z-50 p-6 flex justify-between items-center max-w-7xl mx-auto right-0">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-lg">
+                <svg class="w-5 h-5 text-slate-900 dark:text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" />
+                </svg>
+            </div>
+            <span class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">GEST<span class="text-violet-500">LOYER</span></span>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="{{ path('app_login') }}" class="text-sm font-semibold text-slate-600 dark:text-slate-700 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                Connexion
+            </a>
+            <a href="{{ path('app_register') }}" class="px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-violet-600 hover:bg-violet-700 shadow-md hover:shadow-violet-500/30 transition-all transform hover:-translate-y-0.5">
+                S'inscrire
+            </a>
+        </div>
+    </nav>
+
+    {# ── HERO SECTION ───────────────────────────────────────────── #}
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden flex items-center justify-center">
+        <!-- Décorations de fond -->
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-violet-500/20 blur-[120px] rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-fuchsia-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+
+        <div class="relative max-w-5xl mx-auto px-6 text-center z-10">
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight mb-6">
+                La gestion locative qui vous<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500">
+                    libère l'esprit
+                </span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-600 dark:text-slate-600 dark:text-slate-400 mb-10 max-w-3xl mx-auto leading-relaxed">
+                Propriétaires et locataires, dites adieu aux tensions, à la paperasse interminable et aux retards de paiement. GESTLOYER centralise tout pour une expérience fluide et transparente.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="{{ path('app_register') }}" class="w-full sm:w-auto px-8 py-3.5 rounded-full text-base font-bold text-white bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 shadow-xl hover:shadow-fuchsia-500/40 transition-all transform hover:-translate-y-1">
+                    Commencer gratuitement
+                </a>
+                <a href="#solutions" class="w-full sm:w-auto px-8 py-3.5 rounded-full text-base font-bold text-slate-700 dark:text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm transition-all">
+                    Découvrir comment
+                </a>
+            </div>
+        </div>
+    </section>
+
+    {# ── CE QUE NOUS CORRIGEONS (Problèmes) ─────────────────────── #}
+    <section class="py-20 bg-rose-50/50 dark:bg-rose-900/10 border-y border-rose-100 dark:border-rose-900/30">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">Ce que vous subissez aujourd'hui...</h2>
+                <p class="text-slate-600 dark:text-slate-600 dark:text-slate-400">La gestion classique est un fardeau. Nous l'avons compris.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Problème 1 -->
+                <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-rose-100 dark:border-rose-500/20 relative group hover:-translate-y-1 transition-transform">
+                    <div class="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-500/20 flex items-center justify-center text-rose-500 mb-6">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Loyers impayés & retards</h3>
+                    <p class="text-slate-600 dark:text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Des relances gênantes à faire, des paiements impossibles à tracer correctement, et une visibilité financière désastreuse.
+                    </p>
+                </div>
+
+                <!-- Problème 2 -->
+                <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-rose-100 dark:border-rose-500/20 relative group hover:-translate-y-1 transition-transform">
+                    <div class="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-500/20 flex items-center justify-center text-rose-500 mb-6">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Paperasse infinie</h3>
+                    <p class="text-slate-600 dark:text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Des contrats perdus, des quittances à générer à la main chaque mois, et des dossiers éparpillés entre mails et classeurs.
+                    </p>
+                </div>
+
+                <!-- Problème 3 -->
+                <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-rose-100 dark:border-rose-500/20 relative group hover:-translate-y-1 transition-transform">
+                    <div class="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-500/20 flex items-center justify-center text-rose-500 mb-6">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white">Conflits & incidents lents</h3>
+                    <p class="text-slate-600 dark:text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Une fuite d'eau non signalée, des réparations qui traînent, provoquant frustration chez le locataire et dégradation pour le propriétaire.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ── NOTRE SOLUTION (Bénéfices) ─────────────────────────────── #}
+    <section id="solutions" class="py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-violet-600 dark:text-violet-400 font-bold tracking-wider text-sm uppercase">La méthode GestLoyer</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mt-3 mb-4">...et ce que nous vous offrons.</h2>
+                <p class="text-slate-600 dark:text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Une interface unique pour tout piloter en quelques clics.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Sol 1 -->
+                <div class="p-6 rounded-3xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-200 dark:border-white/5 shadow-xl shadow-slate-200/20 dark:shadow-none hover:shadow-violet-500/10 transition-all">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-5">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Suivi automatisé</h4>
+                    <p class="text-slate-600 dark:text-slate-600 dark:text-slate-400 text-sm">Paiements enregistrés, relances programmées, génération de quittances automatique.</p>
+                </div>
+
+                <!-- Sol 2 -->
+                <div class="p-6 rounded-3xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-200 dark:border-white/5 shadow-xl shadow-slate-200/20 dark:shadow-none hover:shadow-violet-500/10 transition-all">
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-5">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121 12v.75m-8.25-6.5h6.375c.621 0 1.125.504 1.125 1.125v2.25m-15.375 0v-2.25c0-.621.504-1.125 1.125-1.125h6.375m-15.375 0h15.375" />
+                        </svg>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Coffre-fort digital</h4>
+                    <p class="text-slate-600 dark:text-slate-600 dark:text-slate-400 text-sm">Contrats, pièces d'identités, états des lieux centralisés et accessibles 24/7.</p>
+                </div>
+
+                <!-- Sol 3 -->
+                <div class="p-6 rounded-3xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-200 dark:border-white/5 shadow-xl shadow-slate-200/20 dark:shadow-none hover:shadow-violet-500/10 transition-all">
+                    <div class="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-5">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.492-3.396c.339-.464.21-1.12-.293-1.417a2.652 2.652 0 00-3.696.862l-3.396 2.492m-5.877-5.877L17.25 21" />
+                        </svg>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Gestion des incidents</h4>
+                    <p class="text-slate-600 dark:text-slate-600 dark:text-slate-400 text-sm">Déclarez un problème en 1 clic. Le propriétaire est alerté, le suivi est transparent.</p>
+                </div>
+
+                <!-- Sol 4 -->
+                <div class="p-6 rounded-3xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-200 dark:border-white/5 shadow-xl shadow-slate-200/20 dark:shadow-none hover:shadow-violet-500/10 transition-all">
+                    <div class="w-10 h-10 rounded-lg bg-fuchsia-100 dark:bg-fuchsia-500/20 text-fuchsia-600 dark:text-fuchsia-400 flex items-center justify-center mb-5">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+                        </svg>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Notifications temps réel</h4>
+                    <p class="text-slate-600 dark:text-slate-600 dark:text-slate-400 text-sm">Restez toujours informé (paiement reçu, relance, message) grâce au système de cloche.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ── CALL TO ACTION ─────────────────────────────────────────── #}
+    <section class="py-20">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold mb-6">Prêt à simplifier votre quotidien ?</h2>
+            <p class="text-slate-600 dark:text-slate-600 dark:text-slate-400 mb-8">Rejoignez la plateforme et découvrez une nouvelle façon de gérer vos locations.</p>
+            <a href="{{ path('app_register') }}" class="inline-block px-10 py-4 rounded-full text-lg font-bold text-white bg-white dark:bg-slate-900 dark:bg-white dark:text-slate-900 hover:scale-105 shadow-2xl transition-transform">
+                Créer mon compte maintenant
+            </a>
+        </div>
+    </section>
+
+    {# ── FOOTER ─────────────────────────────────────────────────── #}
+    <footer class="py-8 border-t border-slate-200 dark:border-slate-800 text-center text-sm text-slate-500">
+        <p>&copy; {{ 'now'|date('Y') }} GESTLOYER. Tous droits réservés.</p>
+    </footer>
+
+</div>
+{% endblock %}

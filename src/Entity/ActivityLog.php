@@ -50,6 +50,9 @@ class ActivityLog
     #[ORM\Column]
     private bool $isSeen = false;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $payload = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
 
@@ -208,6 +211,18 @@ class ActivityLog
     public function setIsSeen(bool $isSeen): static
     {
         $this->isSeen = $isSeen;
+
+        return $this;
+    }
+
+    public function getPayload(): ?array
+    {
+        return $this->payload;
+    }
+
+    public function setPayload(?array $payload): static
+    {
+        $this->payload = $payload;
 
         return $this;
     }

@@ -1,28 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Paramètres & Archives — GESTLOYER{% endblock %}
+{% block title %}Paramètres & {{ 'settings.nav.archives'|trans }} — GESTLOYER{% endblock %}
 
 {% block body %}
-<div class="min-h-screen themed-page pb-12 bg-slate-50 dark:bg-slate-950">
+<div class="min-h-screen themed-page pb-12 bg-slate-50 dark:bg-slate-50 dark:bg-slate-950">
     
     {# En-tête Global #}
-    <div class="border-b border-white/10" style="background: rgba(255,255,255,0.02);">
+    <div class="border-b border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/20" style="background: linear-gradient(135deg, #8b5cf6, #6366f1);">
-                        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                        <svg class="w-6 h-6 text-slate-900 dark:text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-white tracking-tight">{{ 'settings.title'|trans }}</h1>
-                        <p class="text-slate-400 text-sm mt-1">{{ 'settings.subtitle'|trans }}</p>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{{ 'settings.title'|trans }}</h1>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">{{ 'settings.subtitle'|trans }}</p>
                     </div>
                 </div>
                 <div>
-                    <a href="{{ path('app_admin_index') }}" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-300 hover:text-white transition-all border border-white/10 hover:border-white/20 hover:bg-white/5">
+                    <a href="{{ path('app_admin_index') }}" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-white transition-all border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:border-white/20 hover:bg-slate-100 dark:hover:bg-slate-100 dark:bg-white/5">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                         </svg>
@@ -39,47 +39,47 @@
             {# Sidebar Navigation #}
             <div class="lg:w-1/4">
                 <nav class="sticky top-6 flex flex-col gap-2">
-                    <a href="#section-agence" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                    <a href="#section-agence" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl dark:shadow-none">
                         <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-indigo-500/20 text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" /></svg>
                         </div>
-                        <span class="text-sm font-medium text-white">Profil de l'Agence</span>
+                        <span class="text-sm font-medium text-slate-900 dark:text-white">{{ 'settings.nav.profil_agence'|trans }}</span>
                     </a>
-                    <a href="#section-archives" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 border border-transparent hover:border-white/10">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-800 text-slate-400 group-hover:bg-rose-500 group-hover:text-white transition-colors">
+                    <a href="#section-archives" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-100 dark:hover:bg-slate-100 dark:bg-white/5 border border-transparent hover:border-slate-200 dark:border-white/10">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-rose-500 group-hover:text-white transition-colors">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
                         </div>
-                        <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Archives</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:text-white transition-colors">{{ 'settings.nav.archives'|trans }}</span>
                     </a>
-                    <a href="#section-collaborateurs" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 border border-transparent hover:border-white/10">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-800 text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                    <a href="#section-collaborateurs" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-100 dark:hover:bg-slate-100 dark:bg-white/5 border border-transparent hover:border-slate-200 dark:border-white/10">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.987 8.987 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                         </div>
-                        <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Comptables & Gestionnaires</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:text-white transition-colors">{{ 'settings.nav.collaborateurs'|trans }}</span>
                     </a>
-                    <a href="#section-messagerie" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 border border-transparent hover:border-white/10">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-800 text-slate-400 group-hover:bg-fuchsia-500 group-hover:text-white transition-colors">
+                    <a href="#section-messagerie" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-100 dark:hover:bg-slate-100 dark:bg-white/5 border border-transparent hover:border-slate-200 dark:border-white/10">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-fuchsia-500 group-hover:text-white transition-colors">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15A2.25 2.25 0 012.25 17.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15A2.25 2.25 0 002.25 6.75m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.909A2.25 2.25 0 012.25 6.993V6.75" /></svg>
                         </div>
-                        <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Messagerie</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:text-white transition-colors">{{ 'settings.nav.messagerie'|trans }}</span>
                     </a>
-                    <a href="#section-historique" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 border border-transparent hover:border-white/10">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-800 text-slate-400 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
+                    <a href="#section-historique" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-100 dark:hover:bg-slate-100 dark:bg-white/5 border border-transparent hover:border-slate-200 dark:border-white/10">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m5-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </div>
-                        <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Historiques</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:text-white transition-colors">{{ 'settings.nav.historiques'|trans }}</span>
                     </a>
-                    <a href="#section-apparence" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 border border-transparent hover:border-white/10">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-800 text-slate-400 group-hover:bg-sky-500 group-hover:text-white transition-colors">
+                    <a href="#section-apparence" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-100 dark:hover:bg-slate-100 dark:bg-white/5 border border-transparent hover:border-slate-200 dark:border-white/10">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-sky-500 group-hover:text-white transition-colors">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" /></svg>
                         </div>
-                        <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">Apparence & Langue</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:text-white transition-colors">{{ 'settings.nav.apparence'|trans }}</span>
                     </a>
-                    <a href="#section-about" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 border border-transparent hover:border-white/10">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-800 text-slate-400 group-hover:bg-fuchsia-500 group-hover:text-white transition-colors">
+                    <a href="#section-about" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-100 dark:hover:bg-slate-100 dark:bg-white/5 border border-transparent hover:border-slate-200 dark:border-white/10">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-fuchsia-500 group-hover:text-white transition-colors">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
                         </div>
-                        <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">À propos & Manuel</span>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:text-white transition-colors">{{ 'settings.nav.about'|trans }}</span>
                     </a>
                 </nav>
             </div>
@@ -87,11 +87,11 @@
             {# Main Content Area #}
             <div class="lg:w-3/4 space-y-10">
 
-                {# Section 1: Profil de l'Agence #}
-                <div id="section-agence" class="rounded-2xl overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                    <div class="px-6 py-5 border-b border-white/10" style="background: rgba(255,255,255,0.03);">
-                        <h2 class="text-lg font-bold text-white">Profil de l'Agence</h2>
-                        <p class="text-sm text-slate-400 mt-1">Configurez les informations légales et visuelles de votre agence. Ces données apparaîtront sur les quittances.</p>
+                {# Section 1: {{ 'settings.nav.profil_agence'|trans }} #}
+                <div id="section-agence" class="rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="px-6 py-5 border-b border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800">
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ 'settings.nav.profil_agence'|trans }}</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">{{ 'settings.agence.desc'|trans }}</p>
                     </div>
                     
                     <div class="p-6">
@@ -99,8 +99,8 @@
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                                 {# Informations principales #}
-                                <div class="md:col-span-2 pb-4 border-b border-white/5">
-                                    <h3 class="text-sm font-semibold text-indigo-400 uppercase tracking-wider mb-4">Informations Générales</h3>
+                                <div class="md:col-span-2 pb-4 border-b border-slate-200 dark:border-white/5">
+                                    <h3 class="text-sm font-semibold text-indigo-400 uppercase tracking-wider mb-4">{{ 'settings.agence.general'|trans }}</h3>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             {{ form_label(form.nom, null, {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
@@ -114,8 +114,8 @@
                                 </div>
 
                                 {# Contact #}
-                                <div class="md:col-span-2 pb-4 border-b border-white/5">
-                                    <h3 class="text-sm font-semibold text-indigo-400 uppercase tracking-wider mb-4">Coordonnées de Contact</h3>
+                                <div class="md:col-span-2 pb-4 border-b border-slate-200 dark:border-white/5">
+                                    <h3 class="text-sm font-semibold text-indigo-400 uppercase tracking-wider mb-4">{{ 'settings.agence.contact'|trans }}</h3>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             {{ form_label(form.email, null, {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
@@ -144,7 +144,7 @@
 
                                 {# Informations Légales #}
                                 <div class="md:col-span-2">
-                                    <h3 class="text-sm font-semibold text-indigo-400 uppercase tracking-wider mb-4">Informations Légales & Bancaires</h3>
+                                    <h3 class="text-sm font-semibold text-indigo-400 uppercase tracking-wider mb-4">{{ 'settings.agence.legal'|trans }}</h3>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             {{ form_label(form.siret, null, {'label_attr': {'class': 'block text-sm font-medium text-slate-300 mb-2'}}) }}
@@ -168,41 +168,41 @@
                                 </div>
                             </div>
 
-                            <div class="flex justify-end pt-5 border-t border-white/10 mt-6">
-                                <button type="submit" class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-white transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                            <div class="flex justify-end pt-5 border-t border-slate-200 dark:border-white/10 mt-6">
+                                <button type="submit" class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-slate-900 dark:text-white transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75h1.5m9 0h-9" />
                                     </svg>
-                                    Enregistrer le profil
+                                    {{ 'settings.agence.save'|trans }}
                                 </button>
                             </div>
                         {{ form_end(form) }}
                     </div>
                 </div>
 
-                {# Section 2: Archives #}
-                <div id="section-archives" class="rounded-2xl overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                    <div class="px-6 py-5 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style="background: rgba(255,255,255,0.03);">
+                {# Section 2: {{ 'settings.nav.archives'|trans }} #}
+                <div id="section-archives" class="rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="px-6 py-5 border-b border-slate-200 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-800">
                         <div>
-                            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                 <svg class="w-5 h-5 text-rose-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
                                 </svg>
                                 {{ 'settings.archives_title'|trans }}
                             </h2>
-                            <p class="text-sm text-slate-400 mt-1">{{ 'settings.archives_subtitle'|trans }}</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">{{ 'settings.archives_subtitle'|trans }}</p>
                         </div>
                         <div class="w-full sm:w-64">
                             <label for="roleSelector" class="sr-only">Filtrer par rôle</label>
                             <div class="relative">
-                                <select id="roleSelector" onchange="changeRoleArchive(this.value)" class="block w-full rounded-xl pl-4 pr-10 py-2.5 text-sm text-white transition focus:outline-none focus:ring-1 focus:ring-rose-500 cursor-pointer appearance-none" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
+                                <select id="roleSelector" onchange="changeRoleArchive(this.value)" class="block w-full rounded-xl pl-4 pr-10 py-2.5 text-sm text-slate-900 dark:text-white transition focus:outline-none focus:ring-1 focus:ring-rose-500 cursor-pointer appearance-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
                                     {% for role in roles %}
-                                        <option value="{{ role.value }}" class="bg-slate-800" {% if selectedRole == role.value %}selected{% endif %}>
+                                        <option value="{{ role.value }}" class="bg-white dark:bg-slate-800" {% if selectedRole == role.value %}selected{% endif %}>
                                             {{ role.value|replace({'ROLE_': ''})|capitalize }}s
                                         </option>
                                     {% endfor %}
                                 </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-600 dark:text-slate-400">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                                 </div>
                             </div>
@@ -216,7 +216,7 @@
                                     <th class="py-3 pl-6 pr-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.col_email'|trans }}</th>
                                     <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.col_date'|trans }}</th>
                                     <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.col_status'|trans }}</th>
-                                    <th class="py-3 pl-3 pr-6 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                                    <th class="py-3 pl-3 pr-6 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_action'|trans }}s</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y" style="divide-color: rgba(255,255,255,0.05);">
@@ -224,10 +224,10 @@
                                 <tr class="transition-colors hover:bg-white/[0.02]">
                                     <td class="whitespace-nowrap py-4 pl-6 pr-3">
                                         <div class="flex items-center">
-                                            <div class="h-9 w-9 flex-shrink-0 rounded-xl flex items-center justify-center text-slate-400 font-bold" style="background: rgba(255,255,255,0.06);">
+                                            <div class="h-9 w-9 flex-shrink-0 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-400 font-bold bg-white dark:bg-slate-800">
                                                 {{ archive.email|first|upper }}
                                             </div>
-                                            <div class="ml-4 font-medium text-white">{{ archive.email }}</div>
+                                            <div class="ml-4 font-medium text-slate-900 dark:text-white">{{ archive.email }}</div>
                                         </div>
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500">{{ archive.createdAt|date('d/m/Y') }}</td>
@@ -250,11 +250,11 @@
                                 <tr>
                                     <td colspan="4" class="py-12 text-center">
                                         <div class="flex flex-col items-center justify-center gap-3">
-                                            <div class="w-14 h-14 rounded-2xl flex items-center justify-center" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                                            <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
                                                 <svg class="w-7 h-7 text-slate-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
                                             </div>
-                                            <p class="text-sm font-medium text-white">Aucune archive</p>
-                                            <p class="text-sm text-slate-500">Aucun utilisateur inactif pour ce rôle.</p>
+                                            <p class="text-sm font-medium text-slate-900 dark:text-white">Aucune archive</p>
+                                            <p class="text-sm text-slate-500">{{ 'settings.archives.empty_role'|trans }}</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -264,26 +264,26 @@
                     </div>
                 </div>
 
-                {# Section 3: Collaborateurs (Comptables & Gestionnaires) #}
-                <div id="section-collaborateurs" class="rounded-2xl overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                    <div class="px-6 py-5 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style="background: rgba(255,255,255,0.03);">
+                {# Section 3: Collaborateurs ({{ 'settings.nav.collaborateurs'|trans }}) #}
+                <div id="section-collaborateurs" class="rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="px-6 py-5 border-b border-slate-200 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-800">
                         <div>
-                            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                 <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.987 8.987 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
-                                Comptables & Gestionnaires
+                                {{ 'settings.nav.collaborateurs'|trans }}
                             </h2>
-                            <p class="text-sm text-slate-400 mt-1">Vue d'ensemble des collaborateurs clés qui traitent les opérations (contrats, paiements, incidents).</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">{{ 'settings.collab.desc'|trans }}</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-2">
                             <a href="{{ path('app_admin_users', {role: 'ROLE_GESTIONNAIRE'}) }}"
-                               class="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-300 hover:text-white transition-all border border-white/10 hover:border-white/20 hover:bg-white/5">
-                                Voir gestionnaires
+                               class="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-white transition-all border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:border-white/20 hover:bg-slate-100 dark:hover:bg-slate-100 dark:bg-white/5">
+                                {{ 'settings.collab.btn_gestionnaires'|trans }}
                             </a>
                             <a href="{{ path('app_admin_users', {role: 'ROLE_COMPTABLE'}) }}"
-                               class="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-300 hover:text-white transition-all border border-white/10 hover:border-white/20 hover:bg-white/5">
-                                Voir comptables
+                               class="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-white transition-all border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:border-white/20 hover:bg-slate-100 dark:hover:bg-slate-100 dark:bg-white/5">
+                                {{ 'settings.collab.btn_comptables'|trans }}
                             </a>
                         </div>
                     </div>
@@ -295,7 +295,7 @@
                                     <th class="py-3 pl-6 pr-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Email</th>
                                     <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Rôle</th>
                                     <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Statut</th>
-                                    <th class="py-3 pl-3 pr-6 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Action</th>
+                                    <th class="py-3 pl-3 pr-6 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_action'|trans }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y" style="divide-color: rgba(255,255,255,0.05);">
@@ -303,13 +303,13 @@
                                     <tr class="transition-colors hover:bg-white/[0.02]">
                                         <td class="whitespace-nowrap py-4 pl-6 pr-3">
                                             <div class="flex items-center">
-                                                <div class="h-9 w-9 flex-shrink-0 rounded-xl flex items-center justify-center text-slate-400 font-bold" style="background: rgba(255,255,255,0.06);">
+                                                <div class="h-9 w-9 flex-shrink-0 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-400 font-bold bg-white dark:bg-slate-800">
                                                     {{ u.email|first|upper }}
                                                 </div>
-                                                <div class="ml-4 font-medium text-white">{{ u.email }}</div>
+                                                <div class="ml-4 font-medium text-slate-900 dark:text-white">{{ u.email }}</div>
                                             </div>
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-300">{{ u.role.value|replace({'ROLE_': ''})|capitalize }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-700 dark:text-slate-300">{{ u.role.value|replace({'ROLE_': ''})|capitalize }}</td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm">
                                             <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium text-emerald-300" style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Actif
@@ -326,7 +326,7 @@
                                 {% else %}
                                     <tr>
                                         <td colspan="4" class="py-10 text-center text-slate-500">
-                                            Aucun collaborateur actif (gestionnaire/comptable) pour le moment.
+                                            {{ 'settings.collab.empty'|trans }}
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -335,11 +335,11 @@
                     </div>
                 </div>
 
-                {# Section 4: Messagerie (diffusion / par personne / locataires en retard) #}
-                <div id="section-messagerie" class="rounded-2xl overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                    <div class="px-6 py-5 border-b border-white/10" style="background: rgba(255,255,255,0.03);">
-                        <h2 class="text-lg font-bold text-white">Messagerie</h2>
-                        <p class="text-sm text-slate-400 mt-1">Envoyer un message à tous, à une personne, ou au groupe des locataires en retard de paiement.</p>
+                {# Section 4: {{ 'settings.nav.messagerie'|trans }} (diffusion / par personne / locataires en retard) #}
+                <div id="section-messagerie" class="rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="px-6 py-5 border-b border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800">
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ 'settings.nav.messagerie'|trans }}</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">{{ 'settings.msg.desc'|trans }}</p>
                     </div>
                     <div class="p-6">
                         <form method="POST" action="{{ path('app_admin_parametres_send_message') }}" class="space-y-4">
@@ -347,145 +347,141 @@
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div class="md:col-span-1">
-                                    <label class="block text-sm font-medium text-slate-300 mb-2">Cible</label>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ 'settings.msg.target'|trans }}</label>
                                     <select name="mode" id="admin-message-mode"
-                                            class="block w-full rounded-xl px-4 py-2.5 text-white text-sm transition focus:outline-none focus:ring-1 focus:ring-fuchsia-500"
-                                            style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
-                                        <option value="all_locataires">Diffusion totale (tous les locataires)</option>
-                                        <option value="one">Par personne (email)</option>
-                                        <option value="late_locataires">Groupe (locataires en retard de paiement)</option>
+                                            class="block w-full rounded-xl px-4 py-2.5 text-sm transition focus:outline-none focus:ring-1 focus:ring-fuchsia-500 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                                        <option value="all_locataires">{{ 'settings.msg.target_all'|trans }}</option>
+                                        <option value="one">{{ 'settings.msg.target_one'|trans }}</option>
+                                        <option value="late_locataires">{{ 'settings.msg.target_late'|trans }}</option>
                                     </select>
                                 </div>
 
                                 <div class="md:col-span-2" id="admin-message-target-wrapper" style="display:none;">
-                                    <label class="block text-sm font-medium text-slate-300 mb-2">Email destinataire</label>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ 'settings.msg.target_email'|trans }}</label>
                                     <input type="email" name="targetEmail" placeholder="ex: locataire@exemple.com"
-                                           class="block w-full rounded-xl px-4 py-2.5 text-white text-sm transition focus:outline-none focus:ring-1 focus:ring-fuchsia-500"
-                                           style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
+                                           class="block w-full rounded-xl px-4 py-2.5 text-sm transition focus:outline-none focus:ring-1 focus:ring-fuchsia-500 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-slate-300 mb-2">Sujet</label>
+                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ 'settings.msg.subject'|trans }}</label>
                                 <input type="text" name="subject" required
-                                       placeholder="Rappel de paiement / Information importante…"
-                                       class="block w-full rounded-xl px-4 py-2.5 text-white text-sm transition focus:outline-none focus:ring-1 focus:ring-fuchsia-500"
-                                       style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
+                                       placeholder="{{ 'settings.msg.subject_placeholder'|trans }}"
+                                       class="block w-full rounded-xl px-4 py-2.5 text-sm transition focus:outline-none focus:ring-1 focus:ring-fuchsia-500 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-slate-300 mb-2">Message</label>
+                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ 'settings.msg.message'|trans }}</label>
                                 <textarea name="body" rows="6" required
                                           placeholder="Bonjour,&#10;&#10;Merci de régulariser votre paiement avant la fin du mois…"
-                                          class="block w-full rounded-xl px-4 py-2.5 text-white text-sm transition focus:outline-none focus:ring-1 focus:ring-fuchsia-500"
-                                          style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);"></textarea>
+                                          class="block w-full rounded-xl px-4 py-2.5 text-sm transition focus:outline-none focus:ring-1 focus:ring-fuchsia-500 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm"></textarea>
                             </div>
 
                             <div class="flex justify-end pt-2">
                                 <button type="submit"
-                                        class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-white transition-all shadow-lg shadow-fuchsia-500/20 hover:shadow-fuchsia-500/40 hover:-translate-y-0.5"
+                                        class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-slate-900 dark:text-white transition-all shadow-lg shadow-fuchsia-500/20 hover:shadow-fuchsia-500/40 hover:-translate-y-0.5"
                                         style="background: linear-gradient(135deg, #d946ef, #6366f1);">
-                                    Envoyer le message
+                                    {{ 'settings.msg.send'|trans }}
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
 
-                {# Section 3: Historiques #}
+                {# Section 3: {{ 'settings.nav.historiques'|trans }} #}
                 <div id="section-historique" class="space-y-8">
-                    <div class="rounded-2xl overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08);">
-                        <div class="px-6 py-5 border-b border-white/10" style="background: rgba(255,255,255,0.03);">
-                            <h2 class="text-lg font-bold text-white">Historique des connexions / déconnexions</h2>
-                            <p class="text-sm text-slate-400 mt-1">Suivi des utilisateurs qui se connectent et se déconnectent.</p>
+                    <div class="rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <div class="px-6 py-5 border-b border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800">
+                            <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ 'settings.hist.conn_title'|trans }}</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">{{ 'settings.hist.conn_desc'|trans }}</p>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full">
                                 <thead>
                                     <tr style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.08);">
-                                        <th class="py-3 pl-6 pr-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Utilisateur</th>
-                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Action</th>
-                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">IP</th>
+                                        <th class="py-3 pl-6 pr-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_date'|trans }}</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_user'|trans }}</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_action'|trans }}</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_ip'|trans }}</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y" style="divide-color: rgba(255,255,255,0.05);">
                                     {% for item in recentConnections %}
                                         <tr class="transition-colors hover:bg-white/[0.02] cursor-pointer"
                                             onclick="window.location.href='{{ path('app_admin_history_show', {id: item.id}) }}'">
-                                            <td class="py-3 pl-6 pr-3 text-sm text-slate-300">{{ item.createdAt|date('d/m/Y H:i:s') }}</td>
-                                            <td class="px-3 py-3 text-sm text-white">{{ item.actorEmail ?? 'N/A' }}</td>
+                                            <td class="py-3 pl-6 pr-3 text-sm text-slate-700 dark:text-slate-300">{{ item.createdAt|date('d/m/Y H:i:s') }}</td>
+                                            <td class="px-3 py-3 text-sm text-slate-900 dark:text-white">{{ item.actorEmail ?? 'N/A' }}</td>
                                             <td class="px-3 py-3 text-xs text-indigo-300">{{ item.action }}</td>
-                                            <td class="px-3 py-3 text-sm text-slate-400">{{ item.ipAddress ?? '-' }}</td>
+                                            <td class="px-3 py-3 text-sm text-slate-600 dark:text-slate-400">{{ item.ipAddress ?? '-' }}</td>
                                         </tr>
                                     {% else %}
-                                        <tr><td colspan="4" class="py-8 text-center text-slate-500">Aucun historique de connexion pour le moment.</td></tr>
+                                        <tr><td colspan="4" class="py-8 text-center text-slate-500">{{ 'settings.hist.conn_empty'|trans }}</td></tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div class="rounded-2xl overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08);">
-                        <div class="px-6 py-5 border-b border-white/10" style="background: rgba(255,255,255,0.03);">
-                            <h2 class="text-lg font-bold text-white">Historique des actions utilisateurs</h2>
-                            <p class="text-sm text-slate-400 mt-1">Qui a fait quoi dans l'administration.</p>
+                    <div class="rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <div class="px-6 py-5 border-b border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800">
+                            <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ 'settings.hist.act_title'|trans }}</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">{{ 'settings.hist.act_desc'|trans }}</p>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full">
                                 <thead>
                                     <tr style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.08);">
-                                        <th class="py-3 pl-6 pr-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Acteur</th>
-                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Action</th>
-                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Cible</th>
-                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Détails</th>
+                                        <th class="py-3 pl-6 pr-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_date'|trans }}</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_actor'|trans }}</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_action'|trans }}</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_target'|trans }}</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_details'|trans }}</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y" style="divide-color: rgba(255,255,255,0.05);">
                                     {% for item in recentUserActions %}
                                         <tr class="transition-colors hover:bg-white/[0.02] cursor-pointer"
                                             onclick="window.location.href='{{ path('app_admin_history_show', {id: item.id}) }}'">
-                                            <td class="py-3 pl-6 pr-3 text-sm text-slate-300">{{ item.createdAt|date('d/m/Y H:i:s') }}</td>
-                                            <td class="px-3 py-3 text-sm text-white">{{ item.actorEmail ?? 'N/A' }}</td>
+                                            <td class="py-3 pl-6 pr-3 text-sm text-slate-700 dark:text-slate-300">{{ item.createdAt|date('d/m/Y H:i:s') }}</td>
+                                            <td class="px-3 py-3 text-sm text-slate-900 dark:text-white">{{ item.actorEmail ?? 'N/A' }}</td>
                                             <td class="px-3 py-3 text-xs text-emerald-300">{{ item.action }}</td>
-                                            <td class="px-3 py-3 text-sm text-slate-300">{{ item.targetEmail ?? '-' }}</td>
-                                            <td class="px-3 py-3 text-sm text-slate-400">{{ item.details ?? '-' }}</td>
+                                            <td class="px-3 py-3 text-sm text-slate-700 dark:text-slate-300">{{ item.targetEmail ?? '-' }}</td>
+                                            <td class="px-3 py-3 text-sm text-slate-600 dark:text-slate-400">{{ item.details ?? '-' }}</td>
                                         </tr>
                                     {% else %}
-                                        <tr><td colspan="5" class="py-8 text-center text-slate-500">Aucune action enregistrée pour le moment.</td></tr>
+                                        <tr><td colspan="5" class="py-8 text-center text-slate-500">{{ 'settings.hist.act_empty'|trans }}</td></tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div class="rounded-2xl overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08);">
-                        <div class="px-6 py-5 border-b border-white/10" style="background: rgba(255,255,255,0.03);">
-                            <h2 class="text-lg font-bold text-white">Historique imports / exports CSV</h2>
-                            <p class="text-sm text-slate-400 mt-1">Traçabilité des imports et exports de rapports CSV.</p>
+                    <div class="rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <div class="px-6 py-5 border-b border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800">
+                            <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ 'settings.hist.csv_title'|trans }}</h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">{{ 'settings.hist.csv_desc'|trans }}</p>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full">
                                 <thead>
                                     <tr style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.08);">
-                                        <th class="py-3 pl-6 pr-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Utilisateur</th>
-                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Action CSV</th>
-                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Détails</th>
+                                        <th class="py-3 pl-6 pr-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_date'|trans }}</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_user'|trans }}</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_csv_action'|trans }}</th>
+                                        <th class="px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'settings.hist.col_details'|trans }}</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y" style="divide-color: rgba(255,255,255,0.05);">
                                     {% for item in recentCsvHistory %}
                                         <tr class="transition-colors hover:bg-white/[0.02] cursor-pointer"
                                             onclick="window.location.href='{{ path('app_admin_history_show', {id: item.id}) }}'">
-                                            <td class="py-3 pl-6 pr-3 text-sm text-slate-300">{{ item.createdAt|date('d/m/Y H:i:s') }}</td>
-                                            <td class="px-3 py-3 text-sm text-white">{{ item.actorEmail ?? 'N/A' }}</td>
+                                            <td class="py-3 pl-6 pr-3 text-sm text-slate-700 dark:text-slate-300">{{ item.createdAt|date('d/m/Y H:i:s') }}</td>
+                                            <td class="px-3 py-3 text-sm text-slate-900 dark:text-white">{{ item.actorEmail ?? 'N/A' }}</td>
                                             <td class="px-3 py-3 text-xs text-fuchsia-300">{{ item.action }}</td>
-                                            <td class="px-3 py-3 text-sm text-slate-400">{{ item.details ?? '-' }}</td>
+                                            <td class="px-3 py-3 text-sm text-slate-600 dark:text-slate-400">{{ item.details ?? '-' }}</td>
                                         </tr>
                                     {% else %}
-                                        <tr><td colspan="4" class="py-8 text-center text-slate-500">Aucun import/export CSV pour le moment.</td></tr>
+                                        <tr><td colspan="4" class="py-8 text-center text-slate-500">{{ 'settings.hist.csv_empty'|trans }}</td></tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -493,23 +489,23 @@
                     </div>
                 </div>
 
-                {# Section 3: Apparence & Langue #}
+                {# Section 3: {{ 'settings.nav.apparence'|trans }} #}
                 <div id="section-apparence" class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     
                     {# Apparence #}
-                    <div class="rounded-2xl p-6" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                        <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <div class="rounded-2xl p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                             <svg class="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
                             </svg>
-                            Apparence du panel
+                            {{ 'settings.app.title'|trans }}
                         </h3>
                         <div class="grid grid-cols-2 gap-4">
                             <button onclick="setTheme('light')" id="btn-theme-light" class="group relative flex flex-col items-center justify-center p-5 rounded-xl border-2 transition-all" style="background: rgba(255,255,255,0.04); border-color: transparent;">
                                 <div class="w-12 h-12 rounded-full flex items-center justify-center mb-3 shadow-lg" style="background: #f8fafc;">
                                     <svg class="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
                                 </div>
-                                <span class="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">Thème Clair</span>
+                                <span class="text-sm font-semibold text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:text-white transition-colors">Thème Clair</span>
                             </button>
                             <button onclick="setTheme('dark')" id="btn-theme-dark" class="group relative flex flex-col items-center justify-center p-5 rounded-xl border-2 transition-all" style="background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.5);">
                                 <div class="w-12 h-12 rounded-full flex items-center justify-center mb-3 shadow-lg" style="background: #0f172a; border: 1px solid rgba(255,255,255,0.1);">
@@ -521,53 +517,53 @@
                     </div>
 
                     {# Langue #}
-                    <div class="rounded-2xl p-6" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                        <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <div class="rounded-2xl p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                             <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
                             </svg>
-                            Langue du système
+                            {{ 'settings.app.lang_title'|trans }}
                         </h3>
                         <div class="grid grid-cols-2 gap-4">
-                            <button onclick="setLanguage('fr')" id="btn-lang-fr" class="group flex flex-col items-center justify-center p-5 rounded-xl border-2 transition-all {% if app.request.locale == 'fr' %}border-emerald-500/50 bg-emerald-500/10{% else %}border-transparent hover:bg-white/5 bg-white/5{% endif %}">
+                            <button onclick="setLanguage('fr')" id="btn-lang-fr" class="group flex flex-col items-center justify-center p-5 rounded-xl border-2 transition-all {% if app.request.locale == 'fr' %}border-emerald-500/50 bg-emerald-500/10{% else %}border-transparent hover:bg-slate-100 dark:hover:bg-white/5 bg-slate-100 dark:bg-white/5{% endif %}">
                                 <span class="text-3xl mb-2">🇫🇷</span>
-                                <span class="text-sm {% if app.request.locale == 'fr' %}font-bold text-emerald-400{% else %}font-medium text-slate-300{% endif %}">Français</span>
+                                <span class="text-sm {% if app.request.locale == 'fr' %}font-bold text-emerald-400{% else %}font-medium text-slate-700 dark:text-slate-300{% endif %}">Français</span>
                             </button>
-                            <button onclick="setLanguage('en')" id="btn-lang-en" class="group flex flex-col items-center justify-center p-5 rounded-xl border-2 transition-all {% if app.request.locale == 'en' %}border-emerald-500/50 bg-emerald-500/10{% else %}border-transparent hover:bg-white/5 bg-white/5{% endif %}">
+                            <button onclick="setLanguage('en')" id="btn-lang-en" class="group flex flex-col items-center justify-center p-5 rounded-xl border-2 transition-all {% if app.request.locale == 'en' %}border-emerald-500/50 bg-emerald-500/10{% else %}border-transparent hover:bg-slate-100 dark:hover:bg-white/5 bg-slate-100 dark:bg-white/5{% endif %}">
                                 <span class="text-3xl mb-2">🇬🇧</span>
-                                <span class="text-sm {% if app.request.locale == 'en' %}font-bold text-emerald-400{% else %}font-medium text-slate-300{% endif %}">English</span>
+                                <span class="text-sm {% if app.request.locale == 'en' %}font-bold text-emerald-400{% else %}font-medium text-slate-700 dark:text-slate-300{% endif %}">English</span>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {# Section 4: À propos & Manuel #}
+                {# Section 4: {{ 'settings.nav.about'|trans }} #}
                 <div id="section-about" class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     
                     {# À propos du système #}
-                    <div class="rounded-2xl p-6" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                        <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <div class="rounded-2xl p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                             <svg class="w-5 h-5 text-fuchsia-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                             </svg>
-                            À propos de GESTLOYER
+                            {{ 'settings.about.title'|trans }}
                         </h3>
                         
                         <div class="space-y-4">
-                            <div class="flex justify-between items-center pb-4 border-b border-white/5">
-                                <span class="text-sm font-medium text-slate-400">Version du système</span>
-                                <span class="text-sm font-bold text-white px-2.5 py-1 rounded-md bg-white/5 border border-white/10">v1.2.0 (Stable)</span>
+                            <div class="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-white/5">
+                                <span class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ 'settings.about.version'|trans }}</span>
+                                <span class="text-sm font-bold text-white px-2.5 py-1 rounded-md bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">v1.2.0 (Stable)</span>
                             </div>
-                            <div class="flex justify-between items-center pb-4 border-b border-white/5">
-                                <span class="text-sm font-medium text-slate-400">Licence</span>
-                                <span class="text-sm font-bold text-white">Entreprise</span>
+                            <div class="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-white/5">
+                                <span class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ 'settings.about.license'|trans }}</span>
+                                <span class="text-sm font-bold text-slate-900 dark:text-white">Entreprise</span>
                             </div>
-                            <div class="flex justify-between items-center pb-4 border-b border-white/5">
-                                <span class="text-sm font-medium text-slate-400">Dernière mise à jour</span>
-                                <span class="text-sm font-bold text-white">27 Mai 2026</span>
+                            <div class="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-white/5">
+                                <span class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ 'settings.about.updated'|trans }}</span>
+                                <span class="text-sm font-bold text-slate-900 dark:text-white">27 Mai 2026</span>
                             </div>
                             <div class="pt-2">
-                                <p class="text-xs text-slate-500 leading-relaxed">GESTLOYER est une solution complète de gestion locative, développée avec Symfony 7 et API Platform, offrant des outils performants pour la gestion des biens, des contrats et des paiements.</p>
+                                <p class="text-xs text-slate-500 leading-relaxed">{{ 'settings.about.desc'|trans }}</p>
                             </div>
                         </div>
                     </div>
@@ -575,38 +571,38 @@
                     {# Manuel d'utilisation #}
                     <div class="rounded-2xl p-6 flex flex-col justify-between" style="background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(99,102,241,0.1)); border: 1px solid rgba(168,85,247,0.2); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
                         <div>
-                            <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                                 <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                                 </svg>
-                                Manuel d'Utilisation
+                                {{ 'settings.about.manual_title'|trans }}
                             </h3>
-                            <p class="text-sm text-slate-300 leading-relaxed mb-4">Guide rapide pour bien utiliser GESTLOYER :</p>
-                            <ul class="space-y-2 text-sm text-slate-200 mb-6">
+                            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{{ 'settings.about.manual_desc'|trans }}</p>
+                            <ul class="space-y-2 text-sm text-slate-800 dark:text-slate-200 mb-6">
                                 <li class="flex items-start gap-2">
                                     <span class="mt-1 h-1.5 w-1.5 rounded-full bg-indigo-300"></span>
-                                    <span><strong class="text-white">Demarrage :</strong> connectez-vous puis consultez le tableau de bord (biens, contrats, paiements, incidents).</span>
+                                    <span><strong class="text-slate-900 dark:text-white">Demarrage :</strong> connectez-vous puis consultez le tableau de bord (biens, contrats, paiements, incidents).</span>
                                 </li>
                                 <li class="flex items-start gap-2">
                                     <span class="mt-1 h-1.5 w-1.5 rounded-full bg-indigo-300"></span>
-                                    <span><strong class="text-white">Utilisateurs :</strong> creez les comptes et attribuez les roles adaptes (admin, gestionnaire, comptable, etc.).</span>
+                                    <span><strong class="text-slate-900 dark:text-white">{{ 'settings.hist.col_user'|trans }}s :</strong> creez les comptes et attribuez les roles adaptes (admin, gestionnaire, comptable, etc.).</span>
                                 </li>
                                 <li class="flex items-start gap-2">
                                     <span class="mt-1 h-1.5 w-1.5 rounded-full bg-indigo-300"></span>
-                                    <span><strong class="text-white">Parametres agence :</strong> mettez a jour les informations legales (SIRET, IBAN, logo, contact).</span>
+                                    <span><strong class="text-slate-900 dark:text-white">Parametres agence :</strong> mettez a jour les informations legales (SIRET, IBAN, logo, contact).</span>
                                 </li>
                                 <li class="flex items-start gap-2">
                                     <span class="mt-1 h-1.5 w-1.5 rounded-full bg-indigo-300"></span>
-                                    <span><strong class="text-white">Exploitation :</strong> suivez les paiements, impayes, contrats et incidents de maintenance.</span>
+                                    <span><strong class="text-slate-900 dark:text-white">Exploitation :</strong> suivez les paiements, impayes, contrats et incidents de maintenance.</span>
                                 </li>
                             </ul>
                         </div>
                         
-                        <a href="{{ path('app_admin_manual_download') }}" class="inline-flex items-center justify-center gap-2 w-full rounded-xl px-4 py-3 text-sm font-semibold text-white transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #a855f7, #6366f1); border: 1px solid rgba(255,255,255,0.1);">
+                        <a href="{{ path('app_admin_manual_download') }}" class="inline-flex items-center justify-center gap-2 w-full rounded-xl px-4 py-3 text-sm font-semibold text-slate-900 dark:text-white transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #a855f7, #6366f1); border: 1px solid rgba(255,255,255,0.1);">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                             </svg>
-                            Telecharger le manuel
+                            {{ 'settings.about.download'|trans }}
                         </a>
                     </div>
                 </div>
@@ -642,7 +638,7 @@
             updateThemeUI('light');
         }
 
-        // Messagerie: afficher l'input email uniquement si mode=one
+        // {{ 'settings.nav.messagerie'|trans }}: afficher l'input email uniquement si mode=one
         const mode = document.getElementById('admin-message-mode');
         const wrap = document.getElementById('admin-message-target-wrapper');
         function syncMessageMode() {

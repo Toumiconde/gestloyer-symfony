@@ -3,80 +3,90 @@
 {% block title %}Nouveau Contrat — GESTLOYER{% endblock %}
 
 {% block body %}
-<div class="min-h-screen themed-page flex items-center justify-center py-12" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+<div class="min-h-screen themed-page flex items-center justify-center py-12 bg-slate-50 dark:bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
     <div class="w-full max-w-2xl px-4">
-        <div class="rounded-2xl p-8" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+        <div class="rounded-2xl p-8 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl dark:shadow-none">
             <div class="text-center mb-8">
                 <div class="text-5xl mb-4">📄</div>
-                <h1 class="text-2xl font-bold text-white">Nouveau Contrat de Location</h1>
+                <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Nouveau Contrat de Location</h1>
             </div>
 
             <form method="POST" action="{{ path('app_contrat_new') }}" class="space-y-5">
                 <input type="hidden" name="_token" value="{{ csrf_token('contrat_new') }}">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="col-span-2">
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Bien immobilier *</label>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-700 dark:text-slate-300 mb-2">Bien immobilier *</label>
                         <select name="bien_id" required
-                                class="w-full px-4 py-3 rounded-xl text-white text-sm"
-                                style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);">
+                                class="w-full px-4 py-3 rounded-xl text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white">
                             <option value="">— Sélectionner un bien —</option>
                             {% for bien in biens %}
-                                <option value="{{ bien.id }}">{{ bien.adresse }} ({{ bien.ville ?? '' }})</option>
+                                <option value="{{ bien.id }}">{{ bien.nom }} — {{ bien.emplacement ?: bien.adresse }} [{{ bien.statut.value }}]</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="col-span-2">
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Locataire *</label>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-700 dark:text-slate-300 mb-2">Locataire *</label>
                         <select name="locataire_id" required
-                                class="w-full px-4 py-3 rounded-xl text-white text-sm"
-                                style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);">
+                                class="w-full px-4 py-3 rounded-xl text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white">
                             <option value="">— Sélectionner un locataire —</option>
                             {% for locataire in locataires %}
-                                <option value="{{ locataire.id }}">{{ locataire.email }}</option>
+                                <option value="{{ locataire.id }}">{{ locataire.nom }} {{ locataire.prenom }} — {{ locataire.email }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Date de début *</label>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-700 dark:text-slate-300 mb-2">Date de début *</label>
                         <input type="date" name="dateDebut" required
-                               class="w-full px-4 py-3 rounded-xl text-white text-sm"
-                               style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);">
+                               class="w-full px-4 py-3 rounded-xl text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Date de fin <span class="text-gray-500">(optionnel)</span></label>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-700 dark:text-slate-300 mb-2">Date de fin <span class="text-slate-500 dark:text-slate-600 dark:text-slate-400">(optionnel)</span></label>
                         <input type="date" name="dateFin"
-                               class="w-full px-4 py-3 rounded-xl text-white text-sm"
-                               style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);">
+                               class="w-full px-4 py-3 rounded-xl text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Loyer mensuel (GNF) *</label>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-700 dark:text-slate-300 mb-2">Loyer mensuel (GNF) *</label>
                         <input type="number" name="loyerMensuel" required min="0" step="0.01"
-                               class="w-full px-4 py-3 rounded-xl text-white text-sm"
-                               style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);"
+                               class="w-full px-4 py-3 rounded-xl text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white"
                                placeholder="ex: 500000">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Caution (GNF) *</label>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-700 dark:text-slate-300 mb-2">Caution (GNF) *</label>
                         <input type="number" name="caution" required min="0" step="0.01"
-                               class="w-full px-4 py-3 rounded-xl text-white text-sm"
-                               style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);"
+                               class="w-full px-4 py-3 rounded-xl text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white"
                                placeholder="ex: 1000000">
+                    </div>
+                </div>
+
+                <div class="col-span-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-4 border border-indigo-200 dark:border-indigo-500/20">
+                    <label class="block text-sm font-bold text-indigo-700 dark:text-indigo-300 mb-2">
+                        🤖 Génération automatique des paiements
+                    </label>
+                    <p class="text-xs text-indigo-600 dark:text-indigo-400 mb-3">Le système va créer automatiquement les échéances de paiement dès la validation du contrat.</p>
+                    <div>
+                        <label class="block text-xs font-medium text-indigo-700 dark:text-indigo-300 mb-1">Nombre de mois à générer *</label>
+                        <select name="nb_mois_paiements" class="w-full px-4 py-2.5 rounded-xl text-sm bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-500/30 text-slate-900 dark:text-white">
+                            <option value="3">3 mois (Trimestriel)</option>
+                            <option value="6">6 mois (Semestriel)</option>
+                            <option value="12" selected>12 mois (Annuel)</option>
+                            <option value="24">24 mois (2 ans)</option>
+                            <option value="36">36 mois (3 ans)</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="flex gap-3 pt-2">
                     <a href="{{ path('app_contrat_index') }}"
-                       class="flex-1 px-4 py-3 rounded-xl text-sm font-medium text-center text-gray-300"
-                       style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);">
+                       class="flex-1 px-4 py-3 rounded-xl text-sm font-medium text-center text-slate-700 dark:text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
                         Annuler
                     </a>
                     <button type="submit"
-                            class="flex-1 px-4 py-3 rounded-xl text-sm font-medium text-white"
+                            class="flex-1 px-4 py-3 rounded-xl text-sm font-medium text-slate-900 dark:text-white"
                             style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
                         ✅ Créer le contrat
                     </button>

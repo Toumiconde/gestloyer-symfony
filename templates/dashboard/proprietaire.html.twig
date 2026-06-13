@@ -1,0 +1,421 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Propriétaire | GESTLOYER{% endblock %}
+
+{% block body %}
+<div class="w-full space-y-6">
+
+    {# ══ HEADER ══════════════════════════════════════════════════════════ #}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
+                Bonjour, {{ user.email|split('@')[0]|capitalize }} 
+            </h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                Espace propriétaire — Patrimoine & Revenus
+            </p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{{ path('app_profile') }}"
+               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+                </svg>
+                Mon Profil
+            </a>
+            <a href="{{ path('app_bien_index') }}"
+               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21"/>
+                </svg>
+                Gérer mon patrimoine
+            </a>
+        </div>
+    </div>
+
+    {# ══ FILTRES ══════════════════════════════════════════════════════════ #}
+    <form method="GET" action="{{ path('app_dashboard_proprietaire') }}"
+          class="flex flex-wrap items-end gap-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 px-5 py-4 shadow-sm">
+        <div class="flex flex-col gap-1 min-w-0">
+            <label class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Année</label>
+            <select name="year" onchange="this.form.submit()"
+                    class="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-700 dark:text-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                {% for y in range(year - 3, year + 1) %}
+                    <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="flex flex-col gap-1 min-w-0">
+            <label class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Mois</label>
+            <select name="month" onchange="this.form.submit()"
+                    class="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-700 dark:text-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="0" {% if month == 0 %}selected{% endif %}>Tous les mois</option>
+                {% for i, m in ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'] %}
+                    <option value="{{ i + 1 }}" {% if month == (i + 1) %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-transparent">.</label>
+            <a href="{{ path('app_dashboard_proprietaire') }}"
+               class="rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700 text-sm text-slate-600 dark:text-slate-300 px-4 py-2 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                Réinitialiser
+            </a>
+        </div>
+        <div class="ml-auto">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30">
+                 {{ year }}{% if month > 0 %} — {{ ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'][month - 1] }}{% endif %}
+            </span>
+        </div>
+    </form>
+
+    {% if proprietaire %}
+
+    {# ══ KPI CARDS ════════════════════════════════════════════════════════ #}
+    <div class="grid grid-cols-2 gap-4" style="grid-template-columns: repeat(4, 1fr);">
+
+        {# Loyers Encaissés #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Loyers Encaissés</p>
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ stats.loyers_encaisses|number_format(0, ',', ' ') }}</p>
+            <p class="text-xs text-slate-400 mt-1">GNF cette année</p>
+        </div>
+
+        {# Impayés #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Impayés</p>
+                <div class="w-9 h-9 rounded-xl bg-rose-100 dark:bg-rose-500/20 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-rose-600 dark:text-rose-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ stats.impayes|number_format(0, ',', ' ') }}</p>
+            <p class="text-xs mt-1 {% if stats.impayes > 0 %}text-rose-500{% else %}text-slate-400{% endif %}">
+                {% if stats.impayes > 0 %}À recouvrer{% else %}Tout est à jour ✓{% endif %}
+            </p>
+        </div>
+
+        {# Taux Occupation #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Occupation</p>
+                <div class="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ stats.taux_occupation }}%</p>
+            <div class="mt-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5">
+                <div class="bg-indigo-500 h-1.5 rounded-full" style="width: {{ stats.taux_occupation }}%"></div>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">{{ stats.biens_occupes }}/{{ stats.biens_total }} biens loués</p>
+        </div>
+
+        {# Incidents #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Interventions</p>
+                <div class="w-9 h-9 rounded-xl bg-orange-100 dark:bg-orange-500/20 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ stats.incidents_ouverts }}</p>
+            <p class="text-xs text-slate-400 mt-1">
+                {% if stats.incidents_ouverts > 0 %}En cours de traitement{% else %}Aucun incident actif{% endif %}
+            </p>
+        </div>
+
+    </div>
+
+    {# ══ GRAPHIQUE REVENUS ═════════════════════════════════════════════════ #}
+    <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">Revenus Mensuels</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Évolution sur {{ year }}</p>
+            </div>
+            <span class="inline-flex items-center rounded-full bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+                {{ year }}
+            </span>
+        </div>
+        <canvas id="revenusChart" height="80"></canvas>
+    </div>
+
+    {# ══ GRILLE PRINCIPALE ════════════════════════════════════════════════ #}
+    <div class="grid grid-cols-1 gap-6" style="grid-template-columns: 1fr 380px;">
+
+        {# ─ Mon Parc Immobilier ─ #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 shadow-sm overflow-hidden min-w-0">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700/60">
+                <h2 class="text-base font-bold text-slate-900 dark:text-white"> Mon Parc Immobilier</h2>
+                <a href="{{ path('app_bien_index') }}" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+                    Voir tout →
+                </a>
+            </div>
+            <div class="overflow-x-auto">
+                {% if proprietaire.biens|length > 0 %}
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="bg-slate-50 dark:bg-slate-800/80 text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                            <th class="px-6 py-3">Propriété</th>
+                            <th class="px-6 py-3">Type</th>
+                            <th class="px-6 py-3">Statut</th>
+                            <th class="px-6 py-3 text-right">Loyer/mois</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                        {% for bien in proprietaire.biens|slice(0, 6) %}
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="font-semibold text-sm text-slate-900 dark:text-white">{{ bien.nom }}</p>
+                                <p class="text-xs text-slate-400 truncate max-w-48">{{ bien.adresse }}</p>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-xs text-slate-500 dark:text-slate-400">{{ bien.type.value }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                {% if bien.statut.value == 'OCCUPE' %}
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Loué
+                                </span>
+                                {% elseif bien.statut.value == 'TRAVAUX' %}
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> Travaux
+                                </span>
+                                {% else %}
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Libre
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                {% set contratActif = bien.contrats|filter(c => c.statut.value == 'ACTIF')|first|default(null) %}
+                                <p class="text-sm font-bold text-slate-900 dark:text-white">
+                                    {{ contratActif ? contratActif.loyerMensuel|number_format(0, ',', ' ') ~ ' GNF' : '—' }}
+                                </p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="flex flex-col items-center justify-center py-16 text-center">
+                    <div class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-4">
+                        <svg class="w-7 h-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21"/>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Aucun bien rattaché</p>
+                    <p class="text-xs text-slate-400 mt-1">Contactez l'agence pour associer vos biens</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# ─ Sidebar droite ─ #}
+        <div class="flex flex-col gap-5 min-w-0">
+
+            {# Mes Reversements #}
+            <div class="rounded-2xl overflow-hidden shadow-lg" style="background: linear-gradient(135deg, #1e1b4b, #312e81, #1e293b);">
+                <div class="p-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-white">Mes Reversements</h3>
+                            <p class="text-xs text-indigo-300">Virements agence → vous</p>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-4 mb-4 border border-white/10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs text-indigo-300 mb-1">Net reversé ({{ year }})</p>
+                                <p class="text-xl font-bold text-white">{{ stats.loyers_encaisses|number_format(0, ',', ' ') }} <span class="text-sm font-normal text-indigo-300">GNF</span></p>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 rounded-xl px-4 py-3 border border-white/10 mb-3">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs text-indigo-200">Prochain virement prévu</p>
+                            <p class="text-xs font-semibold text-white">10 du mois</p>
+                        </div>
+                    </div>
+                    <a href="{{ path('app_reversement_index') }}" class="block w-full text-center py-2.5 rounded-xl text-xs font-bold text-white bg-white/10 hover:bg-white/20 border border-white/10 transition-colors">
+                        Historique des Reversements →
+                    </a>
+                </div>
+
+{# Mes Incidents #}
+<div class="rounded-2xl overflow-hidden shadow-lg mt-4" style="background: linear-gradient(135deg, #1e1b4b, #312e81, #1e293b);">
+    <div class="p-5">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                <svg class="w-5 h-5 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3M5 12h14"/>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-white">Mes Incidents</h3>
+                <p class="text-xs text-indigo-300">Signalements sur vos biens</p>
+            </div>
+        </div>
+        <a href="{{ path('app_incident_index') }}" class="block w-full text-center py-2.5 rounded-xl text-xs font-bold text-white bg-white/10 hover:bg-white/20 border border-white/10 transition-colors">
+            Voir la liste des incidents →
+        </a>
+    </div>
+</div>
+            </div>
+
+{# Mes Contrats #}
+<div class="rounded-2xl overflow-hidden shadow-lg mt-4" style="background: linear-gradient(135deg, #1e1b4b, #312e81, #1e293b);">
+    <div class="p-5">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                <svg class="w-5 h-5 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h18M3 17h18"/>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-white">Mes Contrats</h3>
+                <p class="text-xs text-indigo-300">Tous vos contrats actifs et historiques</p>
+            </div>
+        </div>
+        <a href="{{ path('app_contrat_index') }}" class="block w-full text-center py-2.5 rounded-xl text-xs font-bold text-white bg-white/10 hover:bg-white/20 border border-white/10 transition-colors">
+            Voir tous mes contrats →
+        </a>
+    </div>
+</div>
+
+            {# Derniers Contrats #}
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 shadow-sm overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-700/60">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white"> Contrats Actifs</h3>
+                    <a href="{{ path('app_contrat_index') }}" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Voir tout →</a>
+                </div>
+                <div class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                    {% for contrat in derniers_contrats %}
+                    <div class="px-5 py-3 flex items-center justify-between gap-3">
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                                {{ contrat.locataire.nom }} {{ contrat.locataire.prenom }}
+                            </p>
+                            <p class="text-xs text-slate-400 truncate">{{ contrat.bien.nom }}</p>
+                        </div>
+                        <span class="flex-shrink-0 px-2.5 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg text-xs font-bold whitespace-nowrap">
+                            {{ contrat.loyerMensuel|number_format(0, ',', ' ') }} GNF
+                        </span>
+                    </div>
+                    {% else %}
+                    <div class="px-5 py-8 text-center">
+                        <p class="text-sm text-slate-400">Aucun contrat actif récemment.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% else %}
+    {# ══ PROFIL INCOMPLET ═════════════════════════════════════════════════ #}
+    <div class="flex flex-col items-center justify-center py-20 text-center">
+        <div class="w-20 h-20 rounded-3xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center mb-6 shadow-lg">
+            <svg class="w-10 h-10 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+            </svg>
+        </div>
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Profil non encore activé</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 max-w-sm">
+            Votre compte propriétaire n'est pas encore lié à un profil dans notre système. Complétez vos informations pour accéder à votre espace.
+        </p>
+        <a href="{{ path('app_profile') }}"
+           class="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>
+            </svg>
+            Compléter mon profil
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('revenusChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const isDark = document.documentElement.classList.contains('dark');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ revenus_labels|json_encode|raw }},
+            datasets: [{
+                label: 'Revenus (GNF)',
+                data: {{ revenus_values|json_encode|raw }},
+                backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                borderColor: 'rgba(16, 185, 129, 1)',
+                borderWidth: 0,
+                borderRadius: 6,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: isDark ? '#1e293b' : '#0f172a',
+                    padding: 12,
+                    callbacks: {
+                        label: function(ctx) {
+                            return ' ' + new Intl.NumberFormat('fr-FR').format(ctx.parsed.y) + ' GNF';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+                    ticks: {
+                        color: isDark ? '#94a3b8' : '#64748b',
+                        callback: function(v) {
+                            return v >= 1000000 ? (v/1000000).toFixed(1) + 'M' : v >= 1000 ? (v/1000).toFixed(0) + 'K' : v;
+                        }
+                    }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: isDark ? '#94a3b8' : '#64748b' }
+                }
+            }
+        }
+    });
+});
+</script>
+
+{% endblock %}

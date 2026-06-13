@@ -1,0 +1,73 @@
+Spécifications Fonctionnelles et Techniques – Projet Symfony – Gestion des Loyers
+
+1. Contexte et Objectifs
+   • Développer une application web de gestion locative pour les propriétaires, gestionnaires et comptables.
+   • Permettre la création, le suivi et le paiement des loyers, ainsi que la gestion des biens, devis, reversements et rapports.
+
+2. Spécifications Fonctionnelles
+   2.1 Gestion des Utilisateurs
+       - Inscription et authentification (Symfony Security).
+       - Rôles : Propriétaire, Gestionnaire, Comptable, Administrateur.
+       - Gestion des profils, mots de passe oubliés, blocage après tentatives échouées.
+   2.2 Gestion des Biens (Entité Bien)
+       - CRUD complet des biens (adresse, surface, loyer, charges, description).
+       - Voter (BienVoter) pour contrôle d’accès fin aux actions sur les biens.
+   2.3 Devis (Entité Devis)
+       - Création, modification et visualisation des devis liés à un bien.
+       - Validation des champs (montant, dates, pièces jointes).
+   2.4 Paiements (Entité Paiement)
+       - Enregistrement des paiements, suivi du statut (payé, partiel, en attente).
+       - Service PaiementService encapsulant la logique métier (calcul des pénalités, génération de reçus PDF).
+   2.5 Reversements (Entité Reversement)
+       - Calcul automatique des reversements aux propriétaires en fonction des paiements reçus.
+       - Historique des reversements et possibilité d’export CSV.
+   2.6 Tableau de bord analytique
+       - Visualisation des revenus, taux d’occupation, incidents et impayés.
+       - Filtres par période, propriétaire ou gestionnaire.
+   2.7 Export & Reporting
+       - Export CSV des rapports financiers.
+       - Génération de rapports PDF pour les périodes sélectionnées.
+   2.8 Sécurité et Validation
+       - Voters pour chaque entité sensible.
+       - Validation côté serveur et côté client (Symfony Validator, HTML5).
+
+3. Spécifications Techniques
+   • Framework : Symfony 6.x (PHP 8.2).
+   • Base de données : MySQL 8.x, Doctrine ORM.
+   • Authentification : Symfony Security, JWT optionnel pour API.
+   • Gestion des dépendances : Composer.
+   • Services : PaiementService, NotificationService, ReportingService.
+   • Repositories personnalisés pour les requêtes complexes (statistiques, agrégations).
+   • Tests : PHPUnit (unitaires, fonctionnels), Symfony Panther pour les tests E2E.
+   • CI/CD : GitHub Actions automatisant les tests, lint, et le build Docker.
+   • Conteneurisation : Docker + Docker‑Compose (PHP‑FPM, Nginx, MySQL, RabbitMQ optionnel).
+   • Environnement de développement : WAMP sous Windows, possibilité de Docker sur toutes plateformes.
+   • Documentation : README, diagrammes UML, Swagger/OpenAPI pour les API éventuelles.
+   • Gestion des logs : Monolog configuré avec rotation quotidienne.
+   • Sécurité des données : chiffrement des champs sensibles, conformité RGPD, sauvegardes régulières.
+
+4. Architecture
+   - Architecture MVC classique (Controllers, Services, Entities, Repositories).
+   - Utilisation des Voters pour le contrôle d’accès granulaire.
+   - Services dédiés encapsulant la logique métier (paiement, reversement, reporting).
+   - Utilisation d’évènements Symfony (kernel.event_listener) pour les notifications et les actions post‑paiement.
+   - Séparation claire entre la couche domaine (Entities, Repositories) et la couche présentation (Twig, API Platform si besoin).
+
+5. Livrables
+   • Code source complet hébergé sur Git.
+   • Documentation technique (README, diagrammes, spécifications).
+   • Document Word « Spécifications Fonctionnelles et Techniques » (celui‑ci).
+   • Guide d’installation, déploiement et configuration.
+
+6. Planning (exemple)
+   Semaine 1-2 : Analyse, rédaction des spécifications, diagrammes UML.
+   Semaine 3-4 : Mise en place du projet Symfony, configuration sécurité et base de données.
+   Semaine 5-6 : Développement de la gestion des utilisateurs et des biens.
+   Semaine 7-8 : Implémentation des devis, paiements et reversements.
+   Semaine 9 : Tableau de bord, reporting et export.
+   Semaine 10 : Tests, documentation, revue et mise en production.
+
+7. Risques et Contraintes
+   • Compatibilité PHP 8.2 et extensions requises.
+   • Sécurisation des données sensibles (RGPD).
+   • Dépendances tierces (bibliothèques de paiement) et leur évolution.

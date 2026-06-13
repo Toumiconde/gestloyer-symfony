@@ -176,6 +176,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->role;
     }
 
+    /**
+     * Checks if mandatory personal information is filled.
+     */
+    public function isProfileComplete(): bool
+    {
+        // Prefer the direct User fields, otherwise fallback to the linked Proprietaire
+        $nom = $this->getNom();
+        $prenom = $this->getPrenom();
+        $telephone = $this->getTelephone();
+
+        if ($nom === null && $this->getProprietaire()) {
+            $nom = $this->getProprietaire()->getNom();
+        }
+        if ($prenom === null && $this->getProprietaire()) {
+            $prenom = $this->getProprietaire()->getPrenom();
+        }
+        if ($telephone === null && $this->getProprietaire()) {
+            $telephone = $this->getProprietaire()->getTelephone();
+        }
+
+        return $nom !== null && $nom !== ''
+            && $prenom !== null && $prenom !== ''
+            && $telephone !== null && $telephone !== '';
+    }
+
     public function setRole(RoleUtilisateur $role): static
     {
         $this->role = $role;

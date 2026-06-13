@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Proprietaire;
 use App\Form\ProfileType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,14 +30,14 @@ class ProfileController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handle photo upload
+
+            // ── Photo upload ──────────────────────────────────────────────
             $photoFile = $form->get('photoFile')->getData();
             if ($photoFile) {
                 $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $photoFile->guessExtension();
 
-                // Delete old photo if exists
                 $oldPhoto = $user->getPhotoFilename();
                 if ($oldPhoto) {
                     $oldFilePath = $this->getParameter('kernel.project_dir') . '/public/uploads/profiles/' . $oldPhoto;
@@ -53,7 +54,7 @@ class ProfileController extends AbstractController
                 $user->setPhotoFilename($newFilename);
             }
 
-            // Handle password change
+            // ── Mot de passe ──────────────────────────────────────────────
             $plainPassword = $form->get('plainPassword')->getData();
             if (!empty($plainPassword)) {
                 $user->setPassword(
@@ -61,8 +62,38 @@ class ProfileController extends AbstractController
                 );
             }
 
+            // ── Synchronisation avec l'entité Proprietaire ────────────────
+            // Si l'utilisateur est un propriétaire, on synchronise ses données
+            // vers l'entité Proprietaire pour que isProfileComplete() = true
+            if ($user->getRole()->value === 'ROLE_PROPRIETAIRE') {
+                $proprietaire = $user->getProprietaire();
+
+                // Si le Proprietaire n'existe pas encore, on le crée
+                if (!$proprietaire) {
+                    $proprietaire = new Proprietaire();
+                    $proprietaire->setUser($user);
+                    $entityManager->persist($proprietaire);
+                }
+
+                // Synchroniser nom, prenom, telephone depuis User → Proprietaire
+                if ($user->getNom()) {
+                    $proprietaire->setNom($user->getNom());
+                }
+                if ($user->getPrenom()) {
+                    $proprietaire->setPrenom($user->getPrenom());
+                }
+                if ($user->getTelephone()) {
+                    $proprietaire->setTelephone($user->getTelephone());
+                }
+            }
+
             $entityManager->flush();
             $this->addFlash('success', 'Votre profil a été mis à jour avec succès.');
+
+            // Rediriger vers le bon dashboard selon le rôle
+            if ($user->getRole()->value === 'ROLE_PROPRIETAIRE') {
+                return $this->redirectToRoute('app_dashboard_proprietaire');
+            }
 
             return $this->redirectToRoute('app_profile');
         }

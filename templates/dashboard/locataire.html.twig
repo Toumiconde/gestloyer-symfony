@@ -1,0 +1,320 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Espace Locataire | GESTLOYER{% endblock %}
+
+{% block body %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between px-4 sm:px-0">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ 'dashboard.locataire.hello'|trans({'%name%': user.email|split('@')[0]|capitalize}) }}</h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ 'dashboard.locataire.welcome'|trans }}</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex flex-wrap items-center gap-3">
+            <!-- Language Toggle -->
+            <div class="flex items-center gap-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-1 shadow-sm">
+                <a href="{{ path('app_change_locale', {locale: 'fr'}) }}" class="px-2.5 py-1.5 text-xs font-bold rounded-lg transition-colors {% if app.request.locale == 'fr' or app.request.session.get('_locale') == 'fr' %}bg-indigo-50 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400{% else %}text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-slate-700{% endif %}">FR</a>
+                <a href="{{ path('app_change_locale', {locale: 'en'}) }}" class="px-2.5 py-1.5 text-xs font-bold rounded-lg transition-colors {% if app.request.locale == 'en' or app.request.session.get('_locale') == 'en' %}bg-indigo-50 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400{% else %}text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-slate-700{% endif %}">EN</a>
+            </div>
+
+            <!-- Theme Toggle -->
+            <button id="dashboard-theme-toggle" type="button" class="inline-flex items-center justify-center p-2 text-gray-500 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-700 dark:text-gray-400 dark:hover:bg-slate-700 transition-colors shadow-sm" aria-label="Toggle Dark Mode">
+                <svg id="theme-icon-sun" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <svg id="theme-icon-moon" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+
+            <!-- Profil / Paramètres -->
+            <a href="{{ path('app_profile') }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-700 dark:text-gray-300 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                {{ 'dashboard.locataire.settings'|trans }}
+            </a>
+            <a href="{{ path('app_incident_new') }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">
+                {{ 'dashboard.locataire.report_incident'|trans }}
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left Column (Main Stats & Payments) -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            {% if contrat %}
+            <!-- Contrat / Prochain Loyer Card -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-500 via-indigo-600 to-purple-700 p-8 shadow-xl shadow-indigo-500/20">
+                <div class="absolute top-0 right-0 -mr-8 -mt-8 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div class="text-white w-full">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-sm text-xs font-semibold tracking-wide uppercase text-indigo-50 border border-white/20">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span> {{ 'dashboard.locataire.current_housing'|trans }}
+                            </span>
+                            <span class="text-sm font-medium text-indigo-200">N° {{ contrat.numero }}</span>
+                        </div>
+                        <h2 class="text-3xl font-bold mb-6 tracking-tight">{{ contrat.bien.nom }}</h2>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20 shadow-inner">
+                            <div>
+                                <p class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold mb-1">Loyer Mensuel</p>
+                                <p class="text-lg font-bold">{{ contrat.loyerMensuel|number_format(0, ',', ' ') }} <span class="text-xs font-normal text-indigo-200">GNF</span></p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold mb-1">Caution versée</p>
+                                <p class="text-lg font-bold">{{ contrat.caution|number_format(0, ',', ' ') }} <span class="text-xs font-normal text-indigo-200">GNF</span></p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold mb-1">Début du bail</p>
+                                <p class="text-sm font-bold mt-1">{{ contrat.dateDebut|date('d/m/Y') }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold mb-1">Fin du bail</p>
+                                <p class="text-sm font-bold mt-1">{% if contrat.dateFin %}{{ contrat.dateFin|date('d/m/Y') }}{% else %}<span class="text-indigo-200 font-normal">Indéterminée</span>{% endif %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Mon Logement Actuel -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700/60 shadow-sm p-6 mt-6">
+                <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    Mon Logement Actuel
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Infos Bien -->
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ contrat.bien.emplacement ?: contrat.bien.adresse }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ ('enum.type_bien.' ~ contrat.bien.type.value)|trans }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            {% if contrat.bien.nbChambres %}
+                            <span class="px-2.5 py-1 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-md text-xs font-medium">🛏️ {{ contrat.bien.nbChambres }} Chambres</span>
+                            {% endif %}
+                            {% if contrat.bien.doucheInterne %}
+                            <span class="px-2.5 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-md text-xs font-medium">🚿 Douche Int.</span>
+                            {% endif %}
+                            {% if contrat.bien.doucheExterne %}
+                            <span class="px-2.5 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-md text-xs font-medium">🚿 Douche Ext.</span>
+                            {% endif %}
+                            {% if contrat.bien.hasTerrasse %}
+                            <span class="px-2.5 py-1 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 rounded-md text-xs font-medium">🌅 Terrasse</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Contact Propriétaire -->
+                    <div class="bg-gray-50 dark:bg-slate-700/30 rounded-2xl p-4 border border-gray-100 dark:border-slate-600/50">
+                        <h3 class="text-xs uppercase tracking-wider font-bold text-gray-500 dark:text-gray-400 mb-3">Contact Propriétaire / Agence</h3>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-lg">
+                                {{ contrat.bien.proprietaire.nom|first|upper }}
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ contrat.bien.proprietaire.prenom }} {{ contrat.bien.proprietaire.nom }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Propriétaire</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2 mt-3">
+                            {% if contrat.bien.proprietaire.telephone %}
+                            <a href="tel:{{ contrat.bien.proprietaire.telephone }}" class="flex items-center gap-2 text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                {{ contrat.bien.proprietaire.telephone }}
+                            </a>
+                            {% endif %}
+                            {% if contrat.bien.proprietaire.user and contrat.bien.proprietaire.user.email %}
+                            <a href="mailto:{{ contrat.bien.proprietaire.user.email }}" class="flex items-center gap-2 text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                {{ contrat.bien.proprietaire.user.email }}
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="rounded-3xl border-2 border-dashed border-gray-300 dark:border-slate-700 p-12 text-center bg-gray-50/50 dark:bg-slate-800/30">
+                <div class="mx-auto w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{{ 'dashboard.locataire.no_active_contract'|trans }}</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">{{ 'dashboard.locataire.no_property_rented'|trans }}</p>
+                <a href="{{ path('app_locataire_search') }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">
+                    {{ 'dashboard.locataire.search_housing'|trans }}
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Recent Payments List -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700/60 shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-gray-100 dark:border-slate-700/60 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/50">
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        {{ 'dashboard.locataire.recent_payments'|trans }}
+                    </h2>
+                    <a href="{{ path('app_paiement_index') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">{{ 'dashboard.locataire.full_history'|trans|raw }}</a>
+                </div>
+                <div class="divide-y divide-gray-50 dark:divide-slate-700/50">
+                    {% for paiement in paiements %}
+                    <div class="p-5 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-500/10 flex items-center justify-center text-green-600 dark:text-green-400 border border-green-100 dark:border-green-500/20">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ 'dashboard.locataire.payment_validated'|trans }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ 'dashboard.locataire.on_date'|trans({'%date%': paiement.mois ? paiement.mois|date('d/m/Y') : '—'}) }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-5">
+                            <p class="font-bold text-gray-900 dark:text-white">{{ paiement.montantVerse|number_format(0, ',', ' ') }} GNF</p>
+                            {% if paiement.quittance %}
+                            <a href="{{ path('app_quittance_download', {id: paiement.quittance.id}) }}" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors dark:bg-indigo-500/10 dark:text-indigo-400 dark:hover:bg-indigo-500/20" title="Télécharger la quittance">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                <span>{{ 'dashboard.locataire.receipt'|trans }}</span>
+                            </a>
+                            {% else %}
+                            <span class="px-3 py-1.5 text-xs font-medium text-gray-500 bg-gray-100 rounded-lg dark:bg-slate-700 dark:text-gray-400">{{ 'dashboard.locataire.pending'|trans }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="p-8 flex flex-col items-center justify-center text-center">
+                        <svg class="w-12 h-12 text-gray-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ 'dashboard.locataire.no_payment'|trans }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ 'dashboard.locataire.transactions_appear_here'|trans }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column (Available Rentals & Incidents) -->
+        <div class="space-y-6">
+            
+            <!-- Available Rentals Search Section -->
+            <div class="bg-gradient-to-b from-gray-900 to-slate-800 rounded-3xl shadow-xl overflow-hidden relative">
+                <div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none"></div>
+                <div class="p-6 relative z-10">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="p-2 bg-white/10 rounded-xl">
+                            <svg class="w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <h2 class="text-lg font-bold text-white">{{ 'dashboard.locataire.available_rentals'|trans }}</h2>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-6">{{ 'dashboard.locataire.find_future_housing'|trans }}</p>
+                    
+                    <div class="space-y-3">
+                        {% for bien in biens_disponibles %}
+                        <a href="{{ path('app_bien_show', {id: bien.id}) }}" class="block group">
+                            <div class="flex gap-3 p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all backdrop-blur-sm">
+                                <div class="w-16 h-16 rounded-xl bg-slate-700 flex-shrink-0 bg-cover bg-center overflow-hidden relative" style="background-image: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80')">
+                                    <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                                </div>
+                                <div class="flex flex-col justify-center">
+                                    <h3 class="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors line-clamp-1">{{ bien.nom }}</h3>
+                                    <p class="text-xs text-gray-400 mt-0.5 line-clamp-1">{{ bien.adresse }}</p>
+                                    <p class="text-sm font-bold text-indigo-400 mt-1">{{ bien.loyerDeBase|number_format(0, ',', ' ') }} GNF</p>
+                                </div>
+                            </div>
+                        </a>
+                        {% else %}
+                        <p class="text-sm text-gray-400 text-center py-6 bg-white/5 rounded-2xl border border-white/5">{{ 'dashboard.locataire.no_available_property'|trans }}</p>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mt-5">
+                        <a href="{{ path('app_locataire_search') }}" class="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/30">
+                            Voir l'ensemble des locations
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Incidents -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700/60 shadow-sm p-6">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ 'dashboard.locataire.my_incidents'|trans }}</h2>
+                    <span class="px-2.5 py-1 rounded-full bg-orange-50 text-orange-600 text-xs font-bold dark:bg-orange-500/10 dark:text-orange-400">{{ incidents|length }} {{ 'dashboard.locataire.in_progress'|trans }}</span>
+                </div>
+                <div class="space-y-3">
+                    {% for incident in incidents %}
+                    <div class="p-4 rounded-2xl border border-gray-100 dark:border-slate-700/60 bg-gray-50/50 dark:bg-slate-700/30 group hover:border-indigo-100 dark:hover:border-indigo-500/30 transition-colors">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-sm font-bold text-gray-900 dark:text-white">{{ incident.titre }}</h3>
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-yellow-100 text-yellow-800 dark:bg-yellow-500/20 dark:text-yellow-300">{{ ('enum.incident.' ~ incident.statut.value)|trans }}</span>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{{ incident.description }}</p>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-6">
+                        <div class="w-12 h-12 bg-gray-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'dashboard.locataire.all_works_perfectly'|trans }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mt-5">
+                    <a href="{{ path('app_incident_index') }}" class="w-full flex justify-center py-2 text-sm text-gray-600 dark:text-gray-300 font-medium hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">{{ 'dashboard.locataire.manage_my_incidents'|trans }}</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('dashboard-theme-toggle');
+            const sunIcon = document.getElementById('theme-icon-sun');
+            const moonIcon = document.getElementById('theme-icon-moon');
+
+            function isDarkMode() {
+                return document.documentElement.classList.contains('dark');
+            }
+
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+                updateThemeToggleUI();
+            }
+
+            function updateThemeToggleUI() {
+                if (isDarkMode()) {
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                } else {
+                    moonIcon.classList.remove('hidden');
+                    sunIcon.classList.add('hidden');
+                }
+            }
+
+            themeToggle?.addEventListener('click', function() {
+                applyTheme(isDarkMode() ? 'light' : 'dark');
+            });
+
+            // Initialize UI on load
+            updateThemeToggleUI();
+        });
+    </script>
+{% endblock %}

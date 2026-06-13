@@ -3,7 +3,7 @@
 {% block title %}Panel Admin — GESTLOYER{% endblock %}
 
 {% block body %}
-<div class="min-h-screen themed-page bg-slate-50 dark:bg-slate-950">
+<div class="min-h-screen themed-page bg-slate-50 dark:bg-slate-50 dark:bg-slate-950">
 
     {# Decorative glow #}
     <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
@@ -18,34 +18,34 @@
             <div>
                 <div class="flex items-center gap-3 mb-1">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
-                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                        <svg class="w-5 h-5 text-slate-900 dark:text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                         </svg>
                     </div>
-                    <h1 class="text-3xl font-bold text-white tracking-tight">{{ 'admin.title'|trans }}</h1>
+                    <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">{{ 'admin.title'|trans }}</h1>
                 </div>
-                <p class="text-slate-400 text-sm ml-13">{{ 'admin.subtitle'|trans }}</p>
+                <p class="text-slate-600 dark:text-slate-400 text-sm ml-13">{{ 'admin.subtitle'|trans }}</p>
             </div>
             <div class="flex gap-3">
-                <a href="{{ path('app_dashboard') }}" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-300 hover:text-white transition-all border border-white/10 hover:border-white/20 hover:bg-white/5">
+                <a href="{{ path('app_dashboard') }}" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-white transition-all border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:border-white/20 hover:bg-slate-100 dark:hover:bg-slate-100 dark:bg-white/5">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                     </svg>
                     {{ 'admin.vue_gestionnaire'|trans }}
                 </a>
-                <a href="{{ path('app_admin_parametres') }}" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-300 hover:text-white transition-all border border-white/10 hover:border-indigo-400/40 hover:bg-indigo-500/10">
+                <a href="{{ path('app_admin_parametres') }}" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-white transition-all border border-slate-200 dark:border-white/10 hover:border-indigo-400/40 hover:bg-indigo-500/10">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     Paramètres
                 </a>
-                <button type="button" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-white transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                    </svg>
-                    {{ 'admin.rapport'|trans }}
-                </button>
+                <a href="{{ path('admin_csv') }}" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 dark:text-white transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+    </svg>
+    {{ 'admin.rapport'|trans }}
+</a>
             </div>
         </div>
 
@@ -102,8 +102,8 @@
                     <span class="text-xs font-medium px-2 py-1 rounded-full" style="background: {{ kpi.bg }}; color: {{ kpi.color }};">LIVE</span>
                 </div>
                 <div>
-                    <p class="text-sm font-medium text-slate-400">{{ kpi.label }}</p>
-                    <p class="text-2xl font-bold text-white mt-0.5">{{ kpi.value }}</p>
+                    <p class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ kpi.label }}</p>
+                    <p class="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">{{ kpi.value }}</p>
                     <p class="text-xs text-slate-500 mt-1">{{ kpi.sub }}</p>
                 </div>
                 {# Bottom accent line #}
@@ -116,10 +116,10 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
 
             {# Revenue Chart #}
-            <div class="lg:col-span-2 rounded-2xl p-6" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+            <div class="lg:col-span-2 rounded-2xl p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h2 class="text-base font-semibold text-white">{{ 'admin.evolution_revenus'|trans }}</h2>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ 'admin.evolution_revenus'|trans }}</h2>
                         <p class="text-xs text-slate-500 mt-0.5">Revenus cumulés sur les 6 derniers mois</p>
                     </div>
                     <div class="flex items-center gap-2 text-xs font-medium text-emerald-400 px-3 py-1.5 rounded-full" style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);">
@@ -136,8 +136,8 @@
             </div>
 
             {# Activity Feed #}
-            <div class="rounded-2xl p-6 flex flex-col" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
-                <h2 class="text-base font-semibold text-white mb-5">{{ 'admin.activite_recente'|trans }}</h2>
+            <div class="rounded-2xl p-6 flex flex-col bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <h2 class="text-base font-semibold text-slate-900 dark:text-white mb-5">{{ 'admin.activite_recente'|trans }}</h2>
 
                 <div class="flex-1 space-y-5 overflow-y-auto pr-1 custom-scrollbar">
 
@@ -153,12 +153,12 @@
                                     </svg>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-medium text-white truncate">{{ incident.titre|default('Incident') }}</p>
+                                    <p class="text-xs font-medium text-slate-900 dark:text-white truncate">{{ incident.titre|default('Incident') }}</p>
                                     <p class="text-[10px] text-slate-500 mt-0.5">{{ incident.createdAt|date('d/m H:i') }}</p>
                                 </div>
                             </li>
                             {% else %}
-                            <li class="text-xs text-slate-600 italic py-2 text-center">Aucun incident récent</li>
+                            <li class="text-xs text-slate-600 italic py-2 text-center">{{ 'admin.aucun_incident'|trans }}</li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -181,7 +181,7 @@
                                 <span class="text-[10px] text-slate-600 whitespace-nowrap">{{ paiement.mois|date('m/Y') }}</span>
                             </li>
                             {% else %}
-                            <li class="text-xs text-slate-600 italic py-2 text-center">Aucun paiement récent</li>
+                            <li class="text-xs text-slate-600 italic py-2 text-center">{{ 'admin.aucun_paiement'|trans }}</li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -193,8 +193,8 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             {# Quick Actions #}
-            <div class="rounded-2xl p-6" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
-                <h2 class="text-base font-semibold text-white mb-5">{{ 'admin.gestion_rapide'|trans }}</h2>
+            <div class="rounded-2xl p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <h2 class="text-base font-semibold text-slate-900 dark:text-white mb-5">{{ 'admin.gestion_rapide'|trans }}</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
 
                     {% set shortcuts = [
@@ -221,8 +221,8 @@
             </div>
 
             {# Role Distribution #}
-            <div class="rounded-2xl p-6" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
-                <h2 class="text-base font-semibold text-white mb-5">{{ 'admin.repartition'|trans }}</h2>
+            <div class="rounded-2xl p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <h2 class="text-base font-semibold text-slate-900 dark:text-white mb-5">{{ 'admin.repartition'|trans }}</h2>
                 <div class="space-y-4">
                     {% set role_labels = {
                         'ROLE_ADMIN':         { label: 'role.administrateurs'|trans, color: '#6366f1' },
@@ -239,11 +239,11 @@
                             <div class="flex items-center justify-between text-sm mb-2">
                                 <div class="flex items-center gap-2">
                                     <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background: {{ info.color }};"></div>
-                                    <span class="font-medium text-slate-300">{{ info.label }}</span>
+                                    <span class="font-medium text-slate-700 dark:text-slate-300">{{ info.label }}</span>
                                 </div>
-                                <span class="text-white font-semibold tabular-nums">{{ count }} <span class="text-slate-500 font-normal text-xs">({{ percentage }}%)</span></span>
+                                <span class="text-slate-900 dark:text-white font-semibold tabular-nums">{{ count }} <span class="text-slate-500 font-normal text-xs">({{ percentage }}%)</span></span>
                             </div>
-                            <div class="w-full rounded-full h-1.5 overflow-hidden" style="background: rgba(255,255,255,0.06);">
+                            <div class="w-full rounded-full h-1.5 overflow-hidden bg-white dark:bg-slate-800">
                                 <div class="h-1.5 rounded-full transition-all duration-700" style="width: {{ percentage }}%; background: {{ info.color }};"></div>
                             </div>
                         </div>

@@ -1,0 +1,254 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ bien.nom }} — GESTLOYER{% endblock %}
+
+{% block body %}
+<div class="min-h-screen pb-12 bg-gray-50 dark:bg-slate-900">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        {# ── HEADER ─────────────────────────────────────────────────────────── #}
+        <div class="flex items-center justify-between mb-6">
+            <a href="{{ path('app_bien_index') }}"
+               class="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
+                </svg>
+                Retour au patrimoine
+            </a>
+            <div class="flex items-center gap-2">
+                {% if is_granted('EDIT', bien) %}
+                <a href="{{ path('app_bien_edit', {id: bien.id}) }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition">
+                    ✏️ Modifier
+                </a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                <form method="POST" action="{{ path('app_bien_delete', {id: bien.id}) }}"
+                      onsubmit="return confirm('Supprimer définitivement ce bien ?')">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bien.id) }}">
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-red-600 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl hover:bg-red-100 dark:hover:bg-red-500/20 transition">
+                        🗑️ Supprimer
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        {# ── STATUT BADGE ────────────────────────────────────────────────────── #}
+        {% set s = bien.statut.value %}
+        {% set statut_info = s == 'OCCUPE'     ? {color: 'emerald', label: 'Occupé',     dot: 'bg-emerald-400'} :
+                             s == 'DISPONIBLE' ? {color: 'blue',    label: 'Vacant',     dot: 'bg-blue-400'}    :
+                                                 {color: 'orange',  label: 'En Travaux', dot: 'bg-orange-400'}  %}
+
+        {# ── CARTE PRINCIPALE ────────────────────────────────────────────────── #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden mb-6">
+            <div class="h-1.5 bg-{{ statut_info.color }}-500"></div>
+            <div class="p-6 md:p-8">
+                <div class="flex items-start justify-between mb-6">
+                    <div>
+                        <h1 class="text-2xl font-black text-slate-900 dark:text-white">{{ bien.nom }}</h1>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">
+                            📍 {{ bien.emplacement ?: bien.adresse ?: 'Adresse non renseignée' }}
+                        </p>
+                    </div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold
+                                 bg-{{ statut_info.color }}-50 dark:bg-{{ statut_info.color }}-500/10
+                                 text-{{ statut_info.color }}-700 dark:text-{{ statut_info.color }}-300
+                                 border border-{{ statut_info.color }}-200 dark:border-{{ statut_info.color }}-500/20">
+                        <span class="w-2 h-2 rounded-full {{ statut_info.dot }}"></span>
+                        {{ statut_info.label }}
+                    </span>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    {# Informations générales #}
+                    <div>
+                        <h2 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">Informations</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700/50">
+                                <span class="text-sm text-slate-500 dark:text-slate-400">Type</span>
+                                <span class="text-sm font-semibold text-slate-900 dark:text-white px-2.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded">
+                                    {{ bien.type.value }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700/50">
+                                <span class="text-sm text-slate-500 dark:text-slate-400">Adresse</span>
+                                <span class="text-sm font-medium text-slate-900 dark:text-white text-right max-w-[60%]">
+                                    {{ bien.adresse ?: '—' }}
+                                </span>
+                            </div>
+                            {% if bien.emplacement %}
+                            <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700/50">
+                                <span class="text-sm text-slate-500 dark:text-slate-400">Emplacement</span>
+                                <span class="text-sm font-medium text-slate-900 dark:text-white">{{ bien.emplacement }}</span>
+                            </div>
+                            {% endif %}
+                            <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700/50">
+                                <span class="text-sm text-slate-500 dark:text-slate-400">Propriétaire</span>
+                                <span class="text-sm font-semibold text-slate-900 dark:text-white">
+                                    {% if bien.proprietaire %}
+                                        {{ bien.proprietaire.prenom }} {{ bien.proprietaire.nom }}
+                                    {% else %}
+                                        <span class="text-rose-400">Non assigné</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Caractéristiques #}
+                    <div>
+                        <h2 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">Caractéristiques</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700/50">
+                                <span class="text-sm text-slate-500 dark:text-slate-400">🛏️ Chambres</span>
+                                <span class="text-sm font-semibold text-slate-900 dark:text-white">
+                                    {{ bien.nbChambres ?: '—' }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700/50">
+                                <span class="text-sm text-slate-500 dark:text-slate-400">🚿 Douche interne</span>
+                                <span class="text-sm font-semibold {{ bien.doucheInterne ? 'text-emerald-500' : 'text-slate-400' }}">
+                                    {{ bien.doucheInterne ? '✓ Oui' : '✗ Non' }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700/50">
+                                <span class="text-sm text-slate-500 dark:text-slate-400">🚿 Douche externe</span>
+                                <span class="text-sm font-semibold {{ bien.doucheExterne ? 'text-emerald-500' : 'text-slate-400' }}">
+                                    {{ bien.doucheExterne ? '✓ Oui' : '✗ Non' }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700/50">
+                                <span class="text-sm text-slate-500 dark:text-slate-400">🌅 Terrasse</span>
+                                <span class="text-sm font-semibold {{ bien.hasTerrasse ? 'text-emerald-500' : 'text-slate-400' }}">
+                                    {{ bien.hasTerrasse ? '✓ Oui' : '✗ Non' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Changement de statut rapide (gestionnaire) #}
+                {% if is_granted('ROLE_GESTIONNAIRE') %}
+                <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+                    <h2 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">Changer le statut</h2>
+                    <div class="flex flex-wrap gap-3">
+                        {% for s_option in ['DISPONIBLE', 'OCCUPE', 'EN_TRAVAUX'] %}
+                        {% if s_option != bien.statut.value %}
+                        <form method="POST" action="{{ path('app_bien_change_statut', {id: bien.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('statut' ~ bien.id) }}">
+                            <input type="hidden" name="statut" value="{{ s_option }}">
+                            <button type="submit"
+                                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl border transition
+                                    {% if s_option == 'DISPONIBLE' %}text-blue-700 bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20 hover:bg-blue-100
+                                    {% elseif s_option == 'OCCUPE' %}text-emerald-700 bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 hover:bg-emerald-100
+                                    {% else %}text-orange-700 bg-orange-50 dark:bg-orange-500/10 border-orange-200 dark:border-orange-500/20 hover:bg-orange-100{% endif %}">
+                                {% if s_option == 'DISPONIBLE' %}🔑 Marquer Vacant
+                                {% elseif s_option == 'OCCUPE' %}✅ Marquer Occupé
+                                {% else %}🔧 Mettre en Travaux{% endif %}
+                            </button>
+                        </form>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# ── CONTRATS ────────────────────────────────────────────────────────── #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden mb-6">
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">
+                    📄 Contrats <span class="ml-2 text-sm font-normal text-slate-400">({{ bien.contrats|length }})</span>
+                </h2>
+                {% if is_granted('ROLE_GESTIONNAIRE') %}
+                <a href="{{ path('app_contrat_new') }}"
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg hover:bg-indigo-100 transition">
+                    + Nouveau contrat
+                </a>
+                {% endif %}
+            </div>
+            <div class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                {% for contrat in bien.contrats %}
+                {% set c_colors = {'ACTIF': '#10b981', 'EN_ATTENTE': '#f59e0b', 'RESILIE': '#ef4444', 'EXPIRE': '#64748b'} %}
+                {% set cc = c_colors[contrat.statut.value] ?? '#64748b' %}
+                <div class="px-6 py-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ contrat.numero }}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            👤 {{ contrat.locataire ? contrat.locataire.prenom ~ ' ' ~ contrat.locataire.nom : contrat.locataire.email }}
+                            · {{ contrat.dateDebut ? contrat.dateDebut|date('d/m/Y') : '?' }}
+                            → {{ contrat.dateFin ? contrat.dateFin|date('d/m/Y') : 'Indéterminée' }}
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
+                              style="background: {{ cc }}22; color: {{ cc }};">
+                            {{ contrat.statut.value }}
+                        </span>
+                        <span class="text-sm font-bold text-emerald-500">
+                            {{ contrat.loyerMensuel|number_format(0, ',', ' ') }} GNF/mois
+                        </span>
+                        <a href="{{ path('app_contrat_show', {id: contrat.id}) }}"
+                           class="text-xs px-3 py-1.5 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg hover:bg-indigo-100 transition font-semibold">
+                            Voir →
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="px-6 py-8 text-center">
+                    <p class="text-sm text-slate-400">Aucun contrat pour ce bien.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {# ── INCIDENTS ───────────────────────────────────────────────────────── #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">
+                    🔧 Incidents <span class="ml-2 text-sm font-normal text-slate-400">({{ bien.incidents|length }})</span>
+                </h2>
+            </div>
+            <div class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                {% for incident in bien.incidents %}
+                {% set i_colors = {'DECLARE': '#f59e0b', 'EN_COURS': '#3b82f6', 'RESOLU': '#10b981', 'CLOTURE': '#64748b'} %}
+                {% set ic = i_colors[incident.statut.value] ?? '#64748b' %}
+                {% set p_colors = {'HAUTE': '#ef4444', 'MOYENNE': '#f59e0b', 'BASSE': '#10b981'} %}
+                {% set pc = p_colors[incident.priorite.value] ?? '#64748b' %}
+                <div class="px-6 py-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ incident.titre }}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            📅 {{ incident.dateDeclaration ? incident.dateDeclaration|date('d/m/Y') : '?' }}
+                            · Déclaré par {{ incident.declarant ? incident.declarant.email : '?' }}
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full"
+                              style="background: {{ pc }}22; color: {{ pc }};">
+                            {{ incident.priorite.value }}
+                        </span>
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
+                              style="background: {{ ic }}22; color: {{ ic }};">
+                            {{ incident.statut.value }}
+                        </span>
+                        <a href="{{ path('app_incident_show', {id: incident.id}) }}"
+                           class="text-xs px-3 py-1.5 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg hover:bg-indigo-100 transition font-semibold">
+                            Voir →
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="px-6 py-8 text-center">
+                    <p class="text-sm text-slate-400">Aucun incident déclaré pour ce bien.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

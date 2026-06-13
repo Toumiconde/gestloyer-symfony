@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ProprietaireController extends AbstractController
@@ -13,7 +13,7 @@ class ProprietaireController extends AbstractController
     #[IsGranted('ROLE_PROPRIETAIRE')]
     public function index(): Response
     {
-        return $this->render('proprietaire/index.html.twig');
+        return $this->redirectToRoute('app_dashboard_proprietaire');
     }
 }
 

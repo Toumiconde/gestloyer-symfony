@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Contrat;
-use App\Entity\Bien;
-use App\Entity\User;
 use App\Enum\StatutContrat;
 use App\Enum\RoleUtilisateur;
 use App\Repository\ContratRepository;
@@ -14,7 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/contrats')]
@@ -24,9 +22,8 @@ class ContratController extends AbstractController
     #[Route('/', name: 'app_contrat_index', methods: ['GET'])]
     public function index(ContratRepository $contratRepository, Request $request): Response
     {
-        /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        $isAdmin = in_array('ROLE_ADMIN', $user->getRoles());
+        $isAdmin = \in_array('ROLE_ADMIN', $user->getRoles());
 
         $qb = $contratRepository->createQueryBuilder('c')
             ->leftJoin('c.bien', 'b')
@@ -45,7 +42,10 @@ class ContratController extends AbstractController
         // Filtre par statut
         $statut = $request->query->get('statut');
         if ($statut) {
-            $qb->andWhere('c.statut = :statut')->setParameter('statut', StatutContrat::from($statut));
+            $statutEnum = StatutContrat::tryFrom($statut);
+            if ($statutEnum !== null) {
+                $qb->andWhere('c.statut = :statut')->setParameter('statut', $statutEnum);
+            }
         }
 
         $contrats = $qb->getQuery()->getResult();
@@ -120,11 +120,29 @@ class ContratController extends AbstractController
             $contrat->setCaution($caution);
             $contrat->setStatut(StatutContrat::ACTIF);
 
+            // ── Changer le statut du bien en OCCUPÉ ──────────────────────────
+            $bien->setStatut(\App\Enum\StatutBien::OCCUPE);
+
             $em->persist($contrat);
+
+            // ── Générer les paiements mensuels automatiquement ────────────────
+            $nbMoisGeneres = (int) ($request->request->get('nb_mois_paiements') ?: 12);
+            $moisCourant = $dateDebut;
+            for ($i = 0; $i < $nbMoisGeneres; $i++) {
+                $paiement = new \App\Entity\Paiement();
+                $paiement->setContrat($contrat);
+                $paiement->setMois(new \DateTimeImmutable($moisCourant->format('Y-m-01')));
+                $paiement->setMontantDu((string) $loyerMensuel);
+                $paiement->setMontantVerse('0.00');
+                $paiement->setStatut(\App\Enum\StatutPaiement::EN_ATTENTE);
+                $em->persist($paiement);
+                $moisCourant = $moisCourant->modify('+1 month');
+            }
+
             $em->flush();
 
-            $this->addFlash('success', 'Contrat '.$contrat->getNumero().' créé avec succès.');
-            return $this->redirectToRoute('app_contrat_index');
+            $this->addFlash('success', 'Contrat '.$contrat->getNumero().' créé avec succès. '.$nbMoisGeneres.' paiements mensuels générés automatiquement.');
+            return $this->redirectToRoute('app_contrat_show', ['id' => $contrat->getId()]);
         }
 
         $biens     = $bienRepository->findAll();
@@ -163,6 +181,64 @@ class ContratController extends AbstractController
 
         $this->addFlash('success', 'Contrat résilié avec succès.');
         return $this->redirectToRoute('app_contrat_index');
+    }
+
+    #[Route('/{id}/rappel', name: 'app_contrat_rappel', methods: ['POST'])]
+    #[IsGranted('ROLE_GESTIONNAIRE')]
+    public function envoyerRappel(
+        Contrat $contrat,
+        Request $request,
+        \Symfony\Component\Mailer\MailerInterface $mailer
+    ): Response {
+        if (!$this->isCsrfTokenValid('rappel'.$contrat->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token CSRF invalide.');
+            return $this->redirectToRoute('app_contrat_show', ['id' => $contrat->getId()]);
+        }
+
+        $locataire = $contrat->getLocataire();
+        $paiementsEnRetard = $contrat->getPaiements()->filter(function ($p) {
+            return in_array($p->getStatut()->value, ['EN_ATTENTE', 'PARTIEL']);
+        });
+
+        if ($paiementsEnRetard->isEmpty()) {
+            $this->addFlash('info', 'Aucun paiement en retard pour ce contrat.');
+            return $this->redirectToRoute('app_contrat_show', ['id' => $contrat->getId()]);
+        }
+
+        $totalDu = $paiementsEnRetard->reduce(function (float $carry, $p) {
+            return $carry + (float) $p->getMontantDu() - (float) $p->getMontantVerse();
+        }, 0.0);
+
+        $email = (new \Symfony\Component\Mime\Email())
+            ->from('noreply@gestloyer.com')
+            ->to($locataire->getEmail())
+            ->subject('⚠️ Rappel de loyer — ' . $contrat->getNumero())
+            ->html(sprintf(
+                '<div style="font-family:sans-serif;max-width:500px;margin:0 auto">
+                    <h2 style="color:#4f46e5">Rappel de paiement de loyer</h2>
+                    <p>Bonjour <strong>%s %s</strong>,</p>
+                    <p>Nous vous rappelons que vous avez <strong>%d paiement(s)</strong> en attente 
+                    pour un montant total restant de <strong>%s GNF</strong>.</p>
+                    <p>Nous vous remercions de régulariser votre situation dans les meilleurs délais.</p>
+                    <p>Numéro de contrat : <strong>%s</strong></p>
+                    <hr/>
+                    <p style="color:#94a3b8;font-size:12px">Ce message est envoyé automatiquement par le système GESTLOYER.</p>
+                </div>',
+                $locataire->getPrenom() ?? '',
+                $locataire->getNom() ?? '',
+                $paiementsEnRetard->count(),
+                number_format($totalDu, 0, ',', ' '),
+                $contrat->getNumero()
+            ));
+
+        try {
+            $mailer->send($email);
+            $this->addFlash('success', 'Rappel envoyé à '.$locataire->getEmail().' avec succès.');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Échec de l\'envoi du rappel : '.$e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_contrat_show', ['id' => $contrat->getId()]);
     }
 
     #[Route('/{id}/supprimer', name: 'app_contrat_delete', methods: ['POST'])]

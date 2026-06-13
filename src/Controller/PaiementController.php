@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/paiements')]
@@ -22,7 +22,7 @@ class PaiementController extends AbstractController
     {
         /** @var \App\Entity\User $user */
         $user    = $this->getUser();
-        $isAdmin = in_array('ROLE_ADMIN', $user->getRoles());
+        $isAdmin = \in_array('ROLE_ADMIN', $user->getRoles());
 
         $qb = $paiementRepository->createQueryBuilder('p')
             ->leftJoin('p.contrat', 'c')
@@ -40,7 +40,10 @@ class PaiementController extends AbstractController
 
         $statut = $request->query->get('statut');
         if ($statut) {
-            $qb->andWhere('p.statut = :statut')->setParameter('statut', StatutPaiement::from($statut));
+            $statutEnum = StatutPaiement::tryFrom($statut);
+            if ($statutEnum !== null) {
+                $qb->andWhere('p.statut = :statut')->setParameter('statut', $statutEnum);
+            }
         }
 
         $paiements = $qb->getQuery()->getResult();
@@ -85,7 +88,8 @@ class PaiementController extends AbstractController
         if (!$paiement->getQuittance()) {
             $quittance = new \App\Entity\Quittance();
             // Génération d'un numéro unique (ex: Q-202310-001)
-            $numero = 'Q-' . $paiement->getMois()->format('Ym') . '-' . str_pad((string)$paiement->getId(), 4, '0', STR_PAD_LEFT);
+            $mois = $paiement->getMois();
+            $numero = 'Q-' . ($mois !== null ? $mois->format('Ym') : date('Ym')) . '-' . str_pad((string)$paiement->getId(), 4, '0', STR_PAD_LEFT);
             $quittance->setNumero($numero);
             $quittance->setPaiement($paiement);
             $em->persist($quittance);

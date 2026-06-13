@@ -3,17 +3,17 @@
 {% block title %}Contrats — GESTLOYER{% endblock %}
 
 {% block body %}
-<div class="min-h-screen themed-page" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+<div class="min-h-screen pb-12 bg-gray-50 dark:bg-slate-900">
     <div class="max-w-7xl mx-auto px-4 py-8">
 
         <div class="flex items-center justify-between mb-6">
             <div>
-                <h1 class="text-2xl font-bold text-white">📄 Contrats de Location</h1>
-                <p class="text-gray-400 text-sm mt-1">{{ contrats|length }} contrat{{ contrats|length > 1 ? 's' : '' }} trouvé{{ contrats|length > 1 ? 's' : '' }}</p>
+                <h1 class="text-2xl font-bold text-slate-900 dark:text-white">📄 Contrats de Location</h1>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">{{ contrats|length }} contrat{{ contrats|length > 1 ? 's' : '' }} trouvé{{ contrats|length > 1 ? 's' : '' }}</p>
             </div>
             {% if is_granted('ROLE_GESTIONNAIRE') %}
             <a href="{{ path('app_contrat_new') }}"
-               class="px-4 py-2 rounded-lg text-sm font-medium text-white"
+               class="px-4 py-2 rounded-xl text-sm font-semibold text-white shadow-lg"
                style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
                 + Nouveau contrat
             </a>
@@ -21,82 +21,82 @@
         </div>
 
         {# Filtres #}
-        <form method="GET" class="flex gap-3 mb-6 flex-wrap">
+        <div class="flex gap-3 mb-6 flex-wrap">
+            <a href="{{ path('app_contrat_index') }}"
+               class="px-4 py-2 rounded-full text-sm font-medium transition {{ not current_statut ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700' }}">
+               Tous
+            </a>
+            {% set sc_map = {'ACTIF': 'emerald', 'EN_ATTENTE': 'amber', 'RESILIE': 'red', 'EXPIRE': 'slate', 'SUSPENDU': 'violet'} %}
             {% for s in statuts %}
+            {% set color = sc_map[s.value] ?? 'slate' %}
             <a href="{{ path('app_contrat_index', {statut: s.value}) }}"
                class="px-4 py-2 rounded-full text-sm font-medium transition
-               {% if current_statut == s.value %}text-white{% else %}text-gray-400 hover:text-white{% endif %}"
-               style="{% if current_statut == s.value %}background: #f59e0b;{% else %}background: rgba(255,255,255,0.08);{% endif %}">
+               {{ current_statut == s.value ? 'bg-' ~ color ~ '-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700' }}">
                 {{ s.value }}
             </a>
             {% endfor %}
-            {% if current_statut %}
-                <a href="{{ path('app_contrat_index') }}" class="px-4 py-2 text-sm text-gray-500 hover:text-white">✕ Tout voir</a>
-            {% endif %}
-        </form>
+        </div>
 
         {# Liste #}
         <div class="space-y-3">
             {% for contrat in contrats %}
-            {% set statut_color = {
-                'ACTIF': '#10b981', 'EN_ATTENTE': '#f59e0b', 'RESILIE': '#ef4444', 'EXPIRE': '#64748b'
-            } %}
-            {% set color = statut_color[contrat.statut.value] ?? '#64748b' %}
-            <div class="rounded-xl p-5 flex items-center justify-between transition hover:scale-[1.01]"
-                 style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);">
+            {% set sc_map = {'ACTIF': 'emerald', 'EN_ATTENTE': 'amber', 'RESILIE': 'red', 'EXPIRE': 'slate', 'SUSPENDU': 'violet'} %}
+            {% set color = sc_map[contrat.statut.value] ?? 'slate' %}
+            <div class="rounded-2xl p-5 flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition">
                 <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
-                         style="background: {{ color }}22;">📄</div>
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-{{ color }}-100 dark:bg-{{ color }}-500/20">
+                        📄
+                    </div>
                     <div>
-                        <div class="text-sm font-bold text-white">{{ contrat.numero }}</div>
-                        <div class="text-xs text-gray-400 mt-0.5">
+                        <div class="text-sm font-bold text-slate-900 dark:text-white">{{ contrat.numero }}</div>
+                        <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                             🏢 {{ contrat.bien ? contrat.bien.adresse : 'N/A' }}
                             · 👤 {{ contrat.locataire ? contrat.locataire.email : 'N/A' }}
                         </div>
-                        <div class="text-xs text-gray-500 mt-0.5">
+                        <div class="text-xs text-slate-400 mt-0.5">
                             Du {{ contrat.dateDebut ? contrat.dateDebut|date('d/m/Y') : '?' }}
                             {% if contrat.dateFin %} au {{ contrat.dateFin|date('d/m/Y') }}{% endif %}
                         </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <div class="text-sm font-bold text-white">{{ contrat.loyerMensuel|number_format(0, ',', ' ') }} GNF</div>
-                        <div class="text-xs text-gray-500">/ mois</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white">{{ contrat.loyerMensuel|number_format(0, ',', ' ') }} GNF</div>
+                        <div class="text-xs text-slate-400">/ mois</div>
                     </div>
-                    <span class="text-xs px-3 py-1 rounded-full font-medium"
-                          style="background: {{ color }}22; color: {{ color }};">
+                    <span class="text-xs px-3 py-1 rounded-full font-medium bg-{{ color }}-100 dark:bg-{{ color }}-500/20 text-{{ color }}-700 dark:text-{{ color }}-400">
                         {{ contrat.statut.value }}
                     </span>
                     <a href="{{ path('app_contrat_show', {id: contrat.id}) }}"
-                       class="text-sm px-4 py-2 rounded-lg text-blue-300 hover:text-white transition"
-                       style="background: rgba(59,130,246,0.15);">Voir</a>
-                    {% if is_admin and contrat.statut.value != 'RESILIE' %}
+                       class="text-sm px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-100 transition">
+                       Voir
+                    </a>
+                    {% if is_granted('ROLE_GESTIONNAIRE') and contrat.statut.value != 'RESILIE' %}
                     <form method="POST" action="{{ path('app_contrat_resilier', {id: contrat.id}) }}"
                           onsubmit="return confirm('Résilier ce contrat ?')">
                         <input type="hidden" name="_token" value="{{ csrf_token('resilier' ~ contrat.id) }}">
-                        <button type="submit"
-                                class="text-sm px-3 py-2 rounded-lg text-orange-300 hover:text-white transition"
-                                style="background: rgba(249,115,22,0.15);">Résilier</button>
+                        <button type="submit" class="text-sm px-3 py-2 rounded-lg bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-100 transition">
+                            Résilier
+                        </button>
                     </form>
                     {% endif %}
                     {% if is_admin %}
                     <form method="POST" action="{{ path('app_contrat_delete', {id: contrat.id}) }}"
                           onsubmit="return confirm('Supprimer définitivement ce contrat ?')">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ contrat.id) }}">
-                        <button type="submit"
-                                class="text-sm px-3 py-2 rounded-lg text-red-300 hover:text-white transition"
-                                style="background: rgba(239,68,68,0.15);">🗑️</button>
+                        <button type="submit" class="text-sm px-3 py-2 rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-100 transition">
+                            🗑️
+                        </button>
                     </form>
                     {% endif %}
                 </div>
             </div>
             {% else %}
-            <div class="text-center py-20 text-gray-500">
+            <div class="text-center py-20 text-slate-400">
                 <div class="text-5xl mb-4">📄</div>
                 <p class="text-lg">Aucun contrat trouvé.</p>
                 {% if is_granted('ROLE_GESTIONNAIRE') %}
-                <a href="{{ path('app_contrat_new') }}" class="mt-4 inline-block text-sm text-indigo-400 hover:text-white">
+                <a href="{{ path('app_contrat_new') }}" class="mt-4 inline-block text-sm text-indigo-500 hover:text-indigo-600">
                     + Créer le premier contrat
                 </a>
                 {% endif %}

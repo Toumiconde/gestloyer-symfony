@@ -1,0 +1,32 @@
+{
+  "language": "fr,en",
+  "ignorePaths": [
+    "src/**/*.php",
+    "templates/**/*.twig",
+    "vendor/**"
+  ],
+  "words": [
+    "paiement",
+    "paiements",
+    "utilisateur",
+    "utilisateurs",
+    "contrat",
+    "contrats",
+    "bien",
+    "biens",
+    "locataire",
+    "locataires",
+    "proprietaire",
+    "proprietaires",
+    "statut",
+    "statuts",
+    "revenus",
+    "quittance",
+    "quittances",
+    "reversement",
+    "actif",
+    "valide",
+    "VALIDE",
+    "RESOLU"
+  ]
+}

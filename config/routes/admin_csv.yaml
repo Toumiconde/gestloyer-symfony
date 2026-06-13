@@ -1,0 +1,6 @@
+admin_csv:
+    path: /admin/csv
+    controller: App\Controller\AdminCsvController::index
+    methods: [GET, POST]
+    defaults:
+        _role: ROLE_SUPER_ADMIN

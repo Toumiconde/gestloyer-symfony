@@ -8,7 +8,7 @@ use App\Repository\AgenceConfigRepository;
 use App\Service\PdfGeneratorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/quittance')]
@@ -24,11 +24,20 @@ class QuittanceController extends AbstractController
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
         $paiement = $quittance->getPaiement();
+        if (!$paiement) {
+            throw $this->createNotFoundException('Paiement introuvable pour cette quittance.');
+        }
         $contrat = $paiement->getContrat();
+        if (!$contrat) {
+            throw $this->createNotFoundException('Contrat introuvable pour ce paiement.');
+        }
         $bien = $contrat->getBien();
         $locataire = $contrat->getLocataire();
+        if (!$bien || !$locataire) {
+            throw $this->createNotFoundException('Données du contrat incomplètes.');
+        }
 
-        $isAdmin = in_array('ROLE_ADMIN', $user->getRoles());
+        $isAdmin = \in_array('ROLE_ADMIN', $user->getRoles());
         $isGestionnaire = $user->getRole() === RoleUtilisateur::GESTIONNAIRE;
         $isComptable = $user->getRole() === RoleUtilisateur::COMPTABLE;
         $isLocataire = $locataire === $user;

@@ -17,7 +17,7 @@ class ContratVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::VIEW, self::CREATE, self::RESILIER, self::RENOUVELER])
+        return \in_array($attribute, [self::VIEW, self::CREATE, self::RESILIER, self::RENOUVELER])
             && ($subject instanceof Contrat || $subject === null);
     }
 
@@ -38,18 +38,18 @@ class ContratVoter extends Voter
 
         return match($attribute) {
             self::VIEW => $this->canView($contrat, $user),
-            self::CREATE => $this->canCreate($user),
-            self::RESILIER => $this->canResilier($contrat, $user),
-            self::RENOUVELER => $this->canRenouveler($contrat, $user),
+            self::CREATE, self::RESILIER, self::RENOUVELER => $user->getRole() === RoleUtilisateur::GESTIONNAIRE,
             default => false,
         };
     }
 
     private function canView(?Contrat $contrat, User $user): bool
     {
-        if (!$contrat) return false;
-        
-        if (in_array($user->getRole(), [RoleUtilisateur::GESTIONNAIRE, RoleUtilisateur::COMPTABLE])) {
+        if (!$contrat) {
+            return false;
+        }
+
+        if (\in_array($user->getRole(), [RoleUtilisateur::GESTIONNAIRE, RoleUtilisateur::COMPTABLE])) {
             return true;
         }
 
@@ -58,24 +58,11 @@ class ContratVoter extends Voter
         }
 
         if ($user->getRole() === RoleUtilisateur::PROPRIETAIRE) {
-            return $contrat->getBien()->getProprietaire() === $user->getProprietaire();
+            $bien = $contrat->getBien();
+            $userProp = $user->getProprietaire();
+            return $bien !== null && $userProp !== null && $bien->getProprietaire() === $userProp;
         }
 
         return false;
-    }
-
-    private function canCreate(User $user): bool
-    {
-        return $user->getRole() === RoleUtilisateur::GESTIONNAIRE;
-    }
-
-    private function canResilier(Contrat $contrat, User $user): bool
-    {
-        return $user->getRole() === RoleUtilisateur::GESTIONNAIRE;
-    }
-
-    private function canRenouveler(Contrat $contrat, User $user): bool
-    {
-        return $user->getRole() === RoleUtilisateur::GESTIONNAIRE;
     }
 }

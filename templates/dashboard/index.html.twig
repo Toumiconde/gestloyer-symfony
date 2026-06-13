@@ -1,420 +1,301 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard Admin | GESTLOYER{% endblock %}
+{% block title %}Dashboard Analytique | GESTLOYER{% endblock %}
 
 {% block body %}
-    <div class="px-4 sm:px-0 mb-8 flex justify-between items-center">
+{% set currentYear = "now"|date('Y') %}
+<div class="min-h-screen bg-gray-50 dark:bg-slate-900 pb-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    {# ── HEADER ──────────────────────────────────────────────────────── #}
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-            <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">{{ 'dashboard.title'|trans }}</h1>
+            <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">📊 Tableau de Bord Analytique</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-1">Vue globale du patrimoine — {{ currentYear }}</p>
         </div>
-        <div class="flex space-x-3">
-            <button id="dashboard-theme-toggle" type="button" class="btn-secondary flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border-transparent dark:border-white/10">
-                <svg id="theme-icon-sun" class="-ml-1 mr-2 h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                </svg>
-                <svg id="theme-icon-moon" class="-ml-1 h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                </svg>
-            </button>
+        <div class="flex gap-3">
             {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('app_admin_parametres') }}" class="btn-secondary flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border-transparent dark:border-white/10">
-                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                {{ 'settings.title'|trans }}
+            <a href="{{ path('app_admin_parametres') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition shadow-sm">
+                ⚙️ Paramètres
             </a>
             {% endif %}
-            {% if is_granted('ROLE_ADMIN') %}
-                <div class="relative" id="report-menu-root">
-                    <button id="report-menu-trigger" type="button"
-                            class="btn-secondary inline-flex items-center gap-2 px-4 py-2 rounded-xl dark:bg-slate-800 dark:text-slate-200 dark:border-white/10 dark:hover:bg-slate-700">
-                        <svg class="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                        </svg>
-                        {{ 'dashboard.generate_report'|trans }}
-                    </button>
+            <a href="{{ path('app_bien_new') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-600/20">
+                + Nouveau Bien
+            </a>
+        </div>
+    </div>
 
-                    <div id="report-menu-panel" class="hidden absolute right-0 mt-2 w-[420px] rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900 shadow-xl p-4 z-20">
-                        <div class="mb-3">
-                            <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Générer un rapport global</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">Choisis le type de rapport puis exporte ou importe en CSV.</p>
-                        </div>
+    {# ── KPIs PRINCIPAUX ─────────────────────────────────────────────── #}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
 
-                        <div class="mb-3">
-                            <label for="report-csv-type" class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Type de rapport</label>
-                            <select id="report-csv-type"
-                                    class="w-full rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-800 text-sm text-slate-700 dark:text-slate-200 px-3 py-2">
-                                <option value="global">Rapport global</option>
-                                <option value="biens">Biens</option>
-                                <option value="contrats">Contrats</option>
-                                <option value="paiements">Paiements</option>
-                                <option value="incidents">Incidents</option>
-                                <option value="utilisateurs">Utilisateurs</option>
-                            </select>
-                        </div>
+        {# Taux d'occupation #}
+        <div class="col-span-2 lg:col-span-1 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl p-5 text-white shadow-lg shadow-indigo-500/20">
+            <p class="text-xs font-bold uppercase tracking-wider text-indigo-200 mb-1">Taux d'occupation</p>
+            <p class="text-4xl font-black mb-2">{{ stats.taux_occupation }}%</p>
+            <div class="w-full bg-indigo-400/40 rounded-full h-2 mb-2">
+                <div class="bg-white rounded-full h-2 transition-all" style="width: {{ stats.taux_occupation }}%"></div>
+            </div>
+            <p class="text-xs text-indigo-200">{{ stats.biens_occupes }} occupés / {{ stats.biens_total }} biens au total</p>
+        </div>
 
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <button id="report-action-export" type="button"
-                                    class="rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-slate-800 text-sm text-slate-700 dark:text-slate-200 px-3 py-2">
-                                Export CSV
-                            </button>
-                            <button id="report-action-import" type="button"
-                                    class="rounded-xl border border-slate-300 dark:border-white/10 bg-slate-50 dark:bg-slate-800/60 text-sm text-slate-700 dark:text-slate-200 px-3 py-2">
-                                Import CSV
-                            </button>
-                        </div>
+        {# Loyers Encaissés #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Loyers Encaissés</p>
+                <span class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-base">💰</span>
+            </div>
+            <p class="text-2xl font-black text-slate-900 dark:text-white">{{ (stats.loyers_encaisses / 1000000)|number_format(1, ',') }}M</p>
+            <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1">GNF validés</p>
+        </div>
 
-                        <div id="report-csv-export" class="">
-                            <a id="report-csv-export-link" href="{{ path('app_admin_report_global_export_csv') }}"
-                               class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2.5">
-                                Télécharger le CSV
-                            </a>
-                        </div>
+        {# Impayés #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Impayés</p>
+                <span class="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-500/20 flex items-center justify-center text-base">⚠️</span>
+            </div>
+            <p class="text-2xl font-black text-rose-600 dark:text-rose-400">{{ (stats.impayes / 1000000)|number_format(1, ',') }}M</p>
+            <p class="text-xs text-rose-500 dark:text-rose-400 font-medium mt-1">GNF en retard</p>
+        </div>
 
-                        <div id="report-csv-import" class="hidden">
-                            <form method="POST"
-                                  action="{{ path('app_admin_report_global_import_csv') }}"
-                                  enctype="multipart/form-data"
-                                  class="space-y-2">
-                                <input type="hidden" name="_token" value="{{ csrf_token('admin_report_global_import_csv') }}">
-                                <input type="hidden" id="report-csv-import-type" name="reportType" value="global">
-                                <input type="file" name="csvFile" accept=".csv,text/csv"
-                                       class="block w-full text-sm text-slate-600 dark:text-slate-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-500/15 file:text-indigo-500 dark:file:text-indigo-300">
-                                <button type="submit"
-                                        class="inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2.5">
-                                    Importer le CSV
-                                </button>
-                            </form>
+        {# Incidents ouverts #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Incidents</p>
+                <span class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-500/20 flex items-center justify-center text-base">🔧</span>
+            </div>
+            <p class="text-2xl font-black text-slate-900 dark:text-white">{{ stats.incidents_ouverts }}</p>
+            <p class="text-xs text-orange-500 dark:text-orange-400 font-medium mt-1">en cours de traitement</p>
+        </div>
+
+    </div>
+
+    {# ── RÉPARTITION DES BIENS ────────────────────────────────────────── #}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+
+        {# Répartition statuts biens #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <h2 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wide mb-4">Répartition du Parc Immobilier</h2>
+            <div class="flex items-center justify-center mb-4">
+                <canvas id="biensChart" class="max-w-[180px]"></canvas>
+            </div>
+            <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> Occupés</span>
+                    <span class="text-sm font-bold text-slate-900 dark:text-white">{{ stats.biens_occupes }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400"><span class="w-3 h-3 rounded-full bg-blue-500"></span> Vacants</span>
+                    <span class="text-sm font-bold text-slate-900 dark:text-white">{{ stats.biens_vacants }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400"><span class="w-3 h-3 rounded-full bg-orange-500"></span> En Travaux</span>
+                    <span class="text-sm font-bold text-slate-900 dark:text-white">{{ stats.biens_travaux }}</span>
+                </div>
+            </div>
+        </div>
+
+        {# Incidents par priorité #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <h2 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wide mb-4">Incidents par Priorité</h2>
+            <div class="flex items-center justify-center mb-4">
+                <canvas id="incidentsChart" class="max-w-[180px]"></canvas>
+            </div>
+            <div class="space-y-2">
+                {% set p_labels = {'URGENT': {color: 'bg-rose-500', label: 'Urgent'}, 'NORMAL': {color: 'bg-amber-500', label: 'Normal'}, 'FAIBLE': {color: 'bg-emerald-500', label: 'Faible'}} %}
+                {% for row in incidents_by_priorite %}
+                {% set pl = p_labels[row.priorite.value] ?? {color: 'bg-slate-400', label: row.priorite.value} %}
+                <div class="flex items-center justify-between">
+                    <span class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                        <span class="w-3 h-3 rounded-full {{ pl.color }}"></span> {{ pl.label }}
+                    </span>
+                    <span class="text-sm font-bold text-slate-900 dark:text-white">{{ row.total }}</span>
+                </div>
+                {% else %}
+                <p class="text-sm text-slate-400 text-center py-4">Aucun incident ouvert 🎉</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        {# Derniers contrats #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <h2 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wide mb-4">Derniers Contrats</h2>
+            <div class="space-y-3">
+                {% for contrat in derniers_contrats %}
+                <a href="{{ path('app_contrat_show', {id: contrat.id}) }}" class="block p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                    <div class="flex items-center justify-between mb-1">
+                        <p class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ contrat.bien.nom }}</p>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded-full font-bold
+                            {% if contrat.statut.value == 'ACTIF' %}bg-emerald-100 text-emerald-700{% else %}bg-slate-100 text-slate-600{% endif %}">
+                            {{ contrat.statut.value }}
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500">{{ contrat.locataire.nom }} {{ contrat.locataire.prenom }}</p>
+                    <p class="text-xs text-indigo-600 dark:text-indigo-400 font-bold">{{ contrat.loyerMensuel|number_format(0,',',' ') }} GNF/mois</p>
+                </a>
+                {% else %}
+                <p class="text-sm text-slate-400 text-center py-4">Aucun contrat</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    {# ── GRAPHIQUE REVENUS 12 MOIS ────────────────────────────────────── #}
+    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm mb-8">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">Évolution des Revenus {{ currentYear }}</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Loyers encaissés mois par mois</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold">Données réelles</span>
+        </div>
+        <div class="h-56">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+
+    {# ── TABLEAUX ANALYTIQUES ─────────────────────────────────────────── #}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        {# Loyers impayés par locataire #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                <h2 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wide">⚠️ Impayés par Locataire</h2>
+                <a href="{{ path('app_paiement_index', {statut: 'EN_ATTENTE'}) }}" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium">Voir tout</a>
+            </div>
+            <div class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                {% for row in impayes_par_locataire %}
+                {% set pct = stats.impayes > 0 ? (row.total_impaye / stats.impayes * 100)|round : 0 %}
+                <div class="px-6 py-3">
+                    <div class="flex items-center justify-between mb-1">
+                        <div>
+                            <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ row.nom }} {{ row.prenom }}</p>
+                            <p class="text-xs text-slate-400">{{ row.email }} · {{ row.nb_retards }} mois en retard</p>
                         </div>
+                        <p class="text-sm font-black text-rose-600 dark:text-rose-400 ml-4 flex-shrink-0">{{ (row.total_impaye / 1000)|number_format(0,',',' ') }}k GNF</p>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5">
+                        <div class="bg-rose-500 rounded-full h-1.5" style="width: {{ pct }}%"></div>
                     </div>
                 </div>
-            {% else %}
-                <a href="#" class="btn-secondary dark:bg-slate-800 dark:text-slate-200 dark:border-white/10 dark:hover:bg-slate-700 opacity-60 pointer-events-none">
-                    {{ 'dashboard.generate_report'|trans }}
-                </a>
-            {% endif %}
-            <a href="{{ path('app_bien_new') }}" class="btn-primary">
-                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                {{ 'dashboard.new_contract'|trans }}
-            </a>
-        </div>
-    </div>
-
-    <!-- Stats Grid -->
-    <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <!-- Stat 1 -->
-        <div class="card relative overflow-hidden px-4 pt-5 pb-12 sm:px-6 sm:pt-6">
-            <dt>
-                <div class="absolute rounded-xl bg-blue-500 p-3 shadow-lg shadow-blue-500/30">
-                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
-                    </svg>
+                {% else %}
+                <div class="px-6 py-12 text-center">
+                    <p class="text-4xl mb-2">🎉</p>
+                    <p class="text-sm text-slate-500">Aucun impayé en cours !</p>
                 </div>
-                <p class="ml-16 truncate text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'dashboard.patrimoine_global'|trans }}</p>
-            </dt>
-            <dd class="ml-16 flex items-baseline pb-6 sm:pb-7">
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.biens_total }} {{ 'dashboard.biens'|trans }}</p>
-            </dd>
-        </div>
-
-        <!-- Stat 2 -->
-        <div class="card relative overflow-hidden px-4 pt-5 pb-12 sm:px-6 sm:pt-6">
-            <dt>
-                <div class="absolute rounded-xl bg-green-500 p-3 shadow-lg shadow-green-500/30">
-                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-                    </svg>
-                </div>
-                <p class="ml-16 truncate text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'dashboard.taux_occupation'|trans }}</p>
-            </dt>
-            <dd class="ml-16 flex items-baseline pb-6 sm:pb-7">
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.taux_occupation }} %</p>
-                <p class="ml-2 flex items-baseline text-sm font-semibold text-green-600 dark:text-green-400">
-                    ({{ stats.biens_occupes }} {{ 'dashboard.loues'|trans }})
-                </p>
-            </dd>
-        </div>
-
-        <!-- Stat 3 -->
-        <div class="card relative overflow-hidden px-4 pt-5 pb-12 sm:px-6 sm:pt-6 border-l-4 border-l-emerald-500">
-            <dt>
-                <div class="absolute rounded-xl bg-emerald-500 p-3 shadow-lg shadow-emerald-500/30">
-                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <p class="ml-16 truncate text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'dashboard.loyers_encaisses'|trans }}</p>
-            </dt>
-            <dd class="ml-16 flex items-baseline pb-6 sm:pb-7">
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.loyers_encaisses|number_format(0, ',', ' ') }} GNF</p>
-            </dd>
-        </div>
-
-        <!-- Stat 4 -->
-        <div class="card relative overflow-hidden px-4 pt-5 pb-12 sm:px-6 sm:pt-6 border-l-4 border-l-red-500">
-            <dt>
-                <div class="absolute rounded-xl bg-red-500 p-3 shadow-lg shadow-red-500/30">
-                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                </div>
-                <p class="ml-16 truncate text-sm font-medium text-gray-500 dark:text-gray-400">{{ 'dashboard.impayes'|trans }}</p>
-            </dt>
-            <dd class="ml-16 flex items-baseline pb-6 sm:pb-7">
-                <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ stats.impayes|number_format(0, ',', ' ') }} GNF</p>
-            </dd>
-        </div>
-    </dl>
-    
-    <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <!-- Chart Section -->
-        <div class="lg:col-span-2 card p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ 'dashboard.evolution_revenus'|trans }}</h2>
-                <span class="inline-flex items-center rounded-full bg-green-50 dark:bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-700 dark:text-green-400">{{ 'dashboard.real_time'|trans }}</span>
-            </div>
-            <div class="h-[300px] w-full">
-                <canvas id="revenueChart"></canvas>
+                {% endfor %}
             </div>
         </div>
 
-        <!-- Recent Activity -->
-        <div class="card p-6">
-            <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4">{{ 'dashboard.derniers_contrats'|trans }}</h2>
-            <div class="flow-root">
-                <ul role="list" class="-mb-8">
-                    {% for contrat in derniers_contrats %}
-                    <li>
-                        <div class="relative pb-8">
-                            {% if not loop.last %}
-                            <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-white/10" aria-hidden="true"></span>
-                            {% endif %}
-                            <div class="relative flex space-x-3">
-                                <div>
-                                    <span class="h-8 w-8 rounded-full bg-green-100 dark:bg-green-500/20 flex items-center justify-center ring-8 ring-white dark:ring-slate-800">
-                                        <svg class="h-4 w-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                                    <div>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'admin.contrats'|trans }} <span class="font-medium text-gray-900 dark:text-white">{{ contrat.numero }}</span> {{ 'dashboard.contrat_pour'|trans }} <a href="#" class="font-medium text-primary-600 dark:text-primary-400">{{ contrat.bien.nom }}</a></p>
-                                    </div>
-                                    <div class="whitespace-nowrap text-right text-sm text-gray-500 dark:text-gray-400">
-                                        <time datetime="{{ contrat.dateDebut|date('Y-m-d') }}">{{ contrat.dateDebut|date('d/m/Y') }}</time>
-                                    </div>
-                                </div>
+        {# Revenus par propriétaire #}
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                <h2 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wide">💼 Revenus par Propriétaire</h2>
+                <a href="{{ path('app_reversement_index') }}" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium">Reversements</a>
+            </div>
+            <div class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                {% set max_revenu = revenus_par_proprietaire|length > 0 ? revenus_par_proprietaire|first.total_revenu : 1 %}
+                {% for row in revenus_par_proprietaire %}
+                {% set pct = max_revenu > 0 ? (row.total_revenu / max_revenu * 100)|round : 0 %}
+                <div class="px-6 py-3">
+                    <div class="flex items-center justify-between mb-1">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 font-bold text-sm">
+                                {{ row.nom|first|upper }}
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ row.prenom }} {{ row.nom }}</p>
+                                <p class="text-xs text-slate-400">{{ row.nb_biens }} bien(s)</p>
                             </div>
                         </div>
-                    </li>
-                    {% else %}
-                    <li class="text-sm text-gray-500 dark:text-gray-400 italic py-4">{{ 'dashboard.aucun_contrat'|trans }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            
-            <div class="mt-6">
-                <a href="#" class="flex w-full items-center justify-center rounded-md bg-white dark:bg-slate-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-white/20 hover:bg-gray-50 dark:hover:bg-slate-600 transition-colors">
-                    {{ 'dashboard.voir_historique'|trans }}
-                </a>
+                        <p class="text-sm font-black text-emerald-600 dark:text-emerald-400 ml-4 flex-shrink-0">{{ (row.total_revenu / 1000)|number_format(0,',',' ') }}k GNF</p>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5">
+                        <div class="bg-indigo-500 rounded-full h-1.5" style="width: {{ pct }}%"></div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="px-6 py-12 text-center">
+                    <p class="text-4xl mb-2">📊</p>
+                    <p class="text-sm text-slate-500">Aucun reversement enregistré.</p>
+                </div>
+                {% endfor %}
             </div>
         </div>
+
     </div>
+
+</div>
+</div>
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const themeToggle = document.getElementById('dashboard-theme-toggle');
-            const sunIcon = document.getElementById('theme-icon-sun');
-            const moonIcon = document.getElementById('theme-icon-moon');
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const isDark = document.documentElement.classList.contains('dark');
+    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+    const labelColor = isDark ? '#94a3b8' : '#64748b';
 
-            function isDarkMode() {
-                return document.documentElement.classList.contains('dark');
+    // Graphique Revenus 12 mois
+    const ctxRev = document.getElementById('revenueChart').getContext('2d');
+    const grad = ctxRev.createLinearGradient(0, 0, 0, 220);
+    grad.addColorStop(0, 'rgba(99,102,241,0.35)');
+    grad.addColorStop(1, 'rgba(99,102,241,0)');
+    new Chart(ctxRev, {
+        type: 'line',
+        data: {
+            labels: {{ revenus_labels|json_encode|raw }},
+            datasets: [{
+                label: 'Revenus (GNF)',
+                data: {{ revenus_values|json_encode|raw }},
+                borderColor: '#6366f1', backgroundColor: grad,
+                borderWidth: 2.5, pointBackgroundColor: '#6366f1', pointRadius: 4,
+                pointHoverRadius: 6, fill: true, tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: {
+                backgroundColor: '#1e293b', padding: 10,
+                callbacks: { label: ctx => new Intl.NumberFormat('fr-FR').format(ctx.parsed.y) + ' GNF' }
+            }},
+            scales: {
+                y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: labelColor, callback: v => (v/1000000).toFixed(1)+'M' } },
+                x: { grid: { display: false }, ticks: { color: labelColor } }
             }
+        }
+    });
 
-            function applyTheme(theme) {
-                if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('theme', 'light');
-                }
-                updateThemeToggleUI();
-            }
+    // Graphique Répartition Biens
+    const ctxBiens = document.getElementById('biensChart').getContext('2d');
+    new Chart(ctxBiens, {
+        type: 'doughnut',
+        data: {
+            labels: ['Occupés', 'Vacants', 'En Travaux'],
+            datasets: [{ data: [{{ stats.biens_occupes }}, {{ stats.biens_vacants }}, {{ stats.biens_travaux }}],
+                backgroundColor: ['#10b981', '#3b82f6', '#f97316'],
+                borderWidth: 0, hoverOffset: 4 }]
+        },
+        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, cutout: '72%' }
+    });
 
-            function updateThemeToggleUI() {
-                if (isDarkMode()) {
-                    sunIcon.classList.remove('hidden');
-                    moonIcon.classList.add('hidden');
-                } else {
-                    moonIcon.classList.remove('hidden');
-                    sunIcon.classList.add('hidden');
-                }
-            }
-
-            themeToggle?.addEventListener('click', function() {
-                applyTheme(isDarkMode() ? 'light' : 'dark');
-            });
-
-            updateThemeToggleUI();
-
-            // Rapport global CSV (admin) : exporter ou importer
-            const reportMenuRoot = document.getElementById('report-menu-root');
-            const reportMenuTrigger = document.getElementById('report-menu-trigger');
-            const reportMenuPanel = document.getElementById('report-menu-panel');
-            const reportTypeSelect = document.getElementById('report-csv-type');
-            const reportCsvExport = document.getElementById('report-csv-export');
-            const reportCsvImport = document.getElementById('report-csv-import');
-            const reportCsvExportLink = document.getElementById('report-csv-export-link');
-            const reportCsvImportType = document.getElementById('report-csv-import-type');
-            const reportActionExport = document.getElementById('report-action-export');
-            const reportActionImport = document.getElementById('report-action-import');
-
-            function openReportPanel() {
-                reportMenuPanel?.classList.remove('hidden');
-            }
-
-            function closeReportPanel() {
-                reportMenuPanel?.classList.add('hidden');
-            }
-
-            function setReportAction(action) {
-                const isExport = action === 'export';
-                reportCsvExport?.classList.toggle('hidden', !isExport);
-                reportCsvImport?.classList.toggle('hidden', isExport);
-                reportActionExport?.classList.toggle('bg-slate-100', isExport);
-                reportActionExport?.classList.toggle('dark:bg-slate-800', isExport);
-                reportActionImport?.classList.toggle('bg-slate-100', !isExport);
-                reportActionImport?.classList.toggle('dark:bg-slate-800', !isExport);
-            }
-
-            function syncReportCsvType() {
-                if (!reportTypeSelect) return;
-                const selectedType = reportTypeSelect.value;
-
-                if (reportCsvExportLink) {
-                    const baseUrl = "{{ path('app_admin_report_global_export_csv') }}";
-                    reportCsvExportLink.href = `${baseUrl}?type=${encodeURIComponent(selectedType)}`;
-                }
-
-                if (reportCsvImportType) {
-                    reportCsvImportType.value = selectedType;
-                }
-            }
-
-            reportMenuTrigger?.addEventListener('click', function() {
-                const hidden = reportMenuPanel?.classList.contains('hidden');
-                if (hidden) {
-                    openReportPanel();
-                } else {
-                    closeReportPanel();
-                }
-            });
-
-            document.addEventListener('click', function(event) {
-                if (!reportMenuRoot) return;
-                if (!reportMenuRoot.contains(event.target)) {
-                    closeReportPanel();
-                }
-            });
-
-            reportActionExport?.addEventListener('click', function() {
-                setReportAction('export');
-            });
-
-            reportActionImport?.addEventListener('click', function() {
-                setReportAction('import');
-            });
-
-            reportTypeSelect?.addEventListener('change', syncReportCsvType);
-            setReportAction('export');
-            syncReportCsvType();
-
-            const ctx = document.getElementById('revenueChart').getContext('2d');
-            
-            // Gradient fill for the chart
-            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(34, 197, 94, 0.5)'); // Tailwind green-500
-            gradient.addColorStop(1, 'rgba(34, 197, 94, 0.0)');
-
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
-                    datasets: [{
-                        label: 'Revenus (GNF)',
-                        data: [12000000, 15000000, 13500000, 18000000, 17500000, {{ stats.loyers_encaisses > 0 ? stats.loyers_encaisses : 19000000 }}],
-                        borderColor: '#22c55e',
-                        backgroundColor: gradient,
-                        borderWidth: 3,
-                        pointBackgroundColor: '#ffffff',
-                        pointBorderColor: '#22c55e',
-                        pointBorderWidth: 2,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: '#1e293b',
-                            padding: 12,
-                            titleFont: { size: 14, family: "'Inter', sans-serif" },
-                            bodyFont: { size: 13, family: "'Inter', sans-serif" },
-                            callbacks: {
-                                label: function(context) {
-                                    return new Intl.NumberFormat('fr-FR').format(context.parsed.y) + ' GNF';
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: '#f1f5f9',
-                                drawBorder: false
-                            },
-                            ticks: {
-                                color: '#64748b',
-                                font: { family: "'Inter', sans-serif" },
-                                callback: function(value) {
-                                    return value / 1000000 + 'M';
-                                }
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false,
-                                drawBorder: false
-                            },
-                            ticks: {
-                                color: '#64748b',
-                                font: { family: "'Inter', sans-serif" }
-                            }
-                        }
-                    },
-                    interaction: {
-                        intersect: false,
-                        mode: 'index',
-                    },
-                }
-            });
-        });
-    </script>
+    // Graphique Incidents
+    const ctxInc = document.getElementById('incidentsChart').getContext('2d');
+    const incData = {{ incidents_by_priorite|map(r => r.total)|json_encode|raw }};
+    const incLabels = {{ incidents_by_priorite|map(r => r.priorite.value)|json_encode|raw }};
+    new Chart(ctxInc, {
+        type: 'doughnut',
+        data: {
+            labels: incLabels.length ? incLabels : ['Aucun'],
+            datasets: [{ data: incData.length ? incData : [1],
+                backgroundColor: incData.length ? ['#ef4444', '#f59e0b', '#10b981'] : ['#e2e8f0'],
+                borderWidth: 0, hoverOffset: 4 }]
+        },
+        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, cutout: '72%' }
+    });
+});
+</script>
 {% endblock %}

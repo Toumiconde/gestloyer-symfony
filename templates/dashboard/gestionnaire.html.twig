@@ -1,0 +1,221 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Gestionnaire — GESTLOYER{% endblock %}
+
+{% block body %}
+<div class="min-h-screen pb-12 bg-gray-50 dark:bg-slate-900 transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Espace Gestionnaire</h1>
+                <p class="text-slate-500 dark:text-slate-400 mt-1">Gérez le patrimoine, les locataires et les incidents.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="{{ path('app_bien_new') }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-600/20 transition-all">
+                    + Nouveau Bien
+                </a>
+                <a href="{{ path('app_contrat_new') }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 transition-all">
+                    + Nouveau Contrat
+                </a>
+            </div>
+        </div>
+
+        <!-- KPIs Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            
+            <!-- Biens Vacants -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 p-6 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Biens Vacants</p>
+                    <p class="text-3xl font-black text-slate-900 dark:text-white">{{ stats.total_vacants }}</p>
+                </div>
+                <div class="w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center">
+                    <span class="text-2xl">🔑</span>
+                </div>
+            </div>
+
+            <!-- Incidents en cours -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 p-6 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Incidents Ouverts</p>
+                    <p class="text-3xl font-black text-slate-900 dark:text-white">{{ stats.total_incidents }}</p>
+                </div>
+                <div class="w-14 h-14 rounded-full bg-orange-100 dark:bg-orange-500/20 flex items-center justify-center">
+                    <span class="text-2xl">🔧</span>
+                </div>
+            </div>
+
+            <!-- Paiements en retard -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 p-6 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Loyers en retard</p>
+                    <p class="text-3xl font-black text-slate-900 dark:text-white">{{ stats.total_retards }}</p>
+                </div>
+                <div class="w-14 h-14 rounded-full bg-rose-100 dark:bg-rose-500/20 flex items-center justify-center">
+                    <span class="text-2xl">⚠️</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Revenus 12 mois Chart -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm mb-8">
+            <div class="flex items-center justify-between mb-2">
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">Revenus 12 mois</h2>
+            </div>
+            <div class="h-48">
+                <canvas id="revenueChartGest"></canvas>
+            </div>
+        </div>
+
+        <!-- Grille de listes (Biens & Incidents) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            
+            <!-- Biens Vacants List -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">Derniers Biens Vacants</h2>
+                    <a href="{{ path('app_bien_index') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">Voir tout</a>
+                </div>
+                
+                <div class="space-y-4">
+                    {% for bien in biens_vacants %}
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold">
+                                {{ bien.nom|first|upper }}
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-900 dark:text-white">{{ bien.nom }}</p>
+                                <p class="text-xs text-slate-500">{{ bien.type.value }}</p>
+                            </div>
+                        </div>
+                        <a href="{{ path('app_bien_show', {id: bien.id}) }}" class="px-3 py-1.5 bg-white dark:bg-slate-600 rounded-lg text-xs font-medium text-slate-600 dark:text-white shadow-sm border border-slate-200 dark:border-slate-500 hover:bg-slate-100 transition">
+                            Détails
+                        </a>
+                    </div>
+                    {% else %}
+                    <p class="text-sm text-slate-500 text-center py-4">Aucun bien vacant. Super !</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Incidents List -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white">Incidents à Traiter</h2>
+                    <a href="{{ path('app_incident_index') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">Voir tout</a>
+                </div>
+                
+                <div class="space-y-4">
+                    {% for incident in incidents_ouverts %}
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/30">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ incident.titre }}</p>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold 
+                                {% if incident.priorite.value == 'URGENT' %}bg-rose-100 text-rose-700
+                                {% elseif incident.priorite.value == 'NORMAL' %}bg-orange-100 text-orange-700
+                                {% else %}bg-emerald-100 text-emerald-700{% endif %}">
+                                {{ incident.priorite.value }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-500 mb-3 truncate">{{ incident.description }}</p>
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs text-slate-400">🏠 {{ incident.bien.nom }}</p>
+                            <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="text-xs font-medium text-indigo-600 hover:underline">Gérer →</a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-sm text-slate-500 text-center py-4">Aucun incident ouvert.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Table : Paiements en retard -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/60 p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-slate-900 dark:text-white">Retards de Paiements</h2>
+                <a href="{{ path('app_paiement_index') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400">Voir tout</a>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-500 uppercase">
+                            <th class="py-3 px-4">Contrat</th>
+                            <th class="py-3 px-4">Locataire</th>
+                            <th class="py-3 px-4">Mois</th>
+                            <th class="py-3 px-4">Restant Dû</th>
+                            <th class="py-3 px-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                        {% for paiement in paiements_retard %}
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/20 text-sm">
+                            <td class="py-3 px-4 font-medium text-slate-900 dark:text-white">{{ paiement.contrat.numero }}</td>
+                            <td class="py-3 px-4 text-slate-500">{{ paiement.contrat.locataire.nom }} {{ paiement.contrat.locataire.prenom }}</td>
+                            <td class="py-3 px-4">{{ paiement.mois|date('M Y') }}</td>
+                            <td class="py-3 px-4 font-bold text-rose-600">{{ (paiement.montantDu - paiement.montantVerse)|number_format(0, ',', ' ') }} GNF</td>
+                            <td class="py-3 px-4">
+                                <a href="{{ path('app_paiement_show', {id: paiement.id}) }}" class="text-indigo-600 font-medium hover:underline">Détails</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-sm text-slate-500">Aucun retard de paiement !</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const ctx = document.getElementById('revenueChartGest')?.getContext('2d');
+    if (ctx) {
+        const grad = ctx.createLinearGradient(0, 0, 0, 220);
+        grad.addColorStop(0, 'rgba(99,102,241,0.35)');
+        grad.addColorStop(1, 'rgba(99,102,241,0)');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ revenus_labels|json_encode|raw }},
+                datasets: [{
+                    label: 'Revenus (GNF)',
+                    data: {{ revenus_values|json_encode|raw }},
+                    borderColor: '#6366f1',
+                    backgroundColor: grad,
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#6366f1',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e293b', padding: 10, callbacks: { label: ctx => new Intl.NumberFormat('fr-FR').format(ctx.parsed.y) + ' GNF' } } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { callback: v => (v/1000000).toFixed(1) + 'M' } },
+                    x: { ticks: {} }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

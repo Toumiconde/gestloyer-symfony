@@ -54,10 +54,34 @@ class Bien
     #[Groups(['bien:read', 'bien:write'])]
     private StatutBien $statut = StatutBien::DISPONIBLE;
 
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['bien:read', 'bien:write'])]
+    private ?int $loyerDeBase = null;
+
     #[ORM\ManyToOne(inversedBy: 'biens')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['bien:read', 'bien:write'])]
     private ?Proprietaire $proprietaire = null;
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['bien:read', 'bien:write'])]
+    private ?int $nbChambres = null;
+
+    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    #[Groups(['bien:read', 'bien:write'])]
+    private ?bool $doucheInterne = null;
+
+    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    #[Groups(['bien:read', 'bien:write'])]
+    private ?bool $doucheExterne = null;
+
+    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    #[Groups(['bien:read', 'bien:write'])]
+    private ?bool $hasTerrasse = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['bien:read', 'bien:write'])]
+    private ?string $emplacement = null;
 
     #[ORM\OneToMany(mappedBy: 'bien', targetEntity: Contrat::class)]
     #[Groups(['bien:read'])]
@@ -66,10 +90,14 @@ class Bien
     #[ORM\OneToMany(mappedBy: 'bien', targetEntity: Incident::class)]
     private Collection $incidents;
 
+    #[ORM\OneToMany(mappedBy: 'bien', targetEntity: BienPhoto::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $photos;
+
     public function __construct()
     {
         $this->contrats = new ArrayCollection();
         $this->incidents = new ArrayCollection();
+        $this->photos   = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -137,8 +165,71 @@ class Bien
         return $this;
     }
 
+    public function getNbChambres(): ?int
+    {
+        return $this->nbChambres;
+    }
+
+    public function setNbChambres(?int $nbChambres): static
+    {
+        $this->nbChambres = $nbChambres;
+        return $this;
+    }
+
+    public function isDoucheInterne(): ?bool
+    {
+        return $this->doucheInterne;
+    }
+
+    public function setDoucheInterne(?bool $doucheInterne): static
+    {
+        $this->doucheInterne = $doucheInterne;
+        return $this;
+    }
+
+    public function isDoucheExterne(): ?bool
+    {
+        return $this->doucheExterne;
+    }
+
+    public function setDoucheExterne(?bool $doucheExterne): static
+    {
+        $this->doucheExterne = $doucheExterne;
+        return $this;
+    }
+
+    public function isHasTerrasse(): ?bool
+    {
+        return $this->hasTerrasse;
+    }
+
+    public function setHasTerrasse(?bool $hasTerrasse): static
+    {
+        $this->hasTerrasse = $hasTerrasse;
+        return $this;
+    }
+
+    public function getEmplacement(): ?string
+    {
+        return $this->emplacement;
+    }
+
+    public function setEmplacement(?string $emplacement): static
+    {
+        $this->emplacement = $emplacement;
+        return $this;
+    }    public function getLoyerDeBase(): ?int
+    {
+        return $this->loyerDeBase;
+    }
+
+    public function setLoyerDeBase(?int $loyerDeBase): static
+    {
+        $this->loyerDeBase = $loyerDeBase;
+        return $this;
+    }
+
     /**
-     * @return Collection<int, Contrat>
      */
     public function getContrats(): Collection
     {
@@ -188,12 +279,36 @@ class Bien
     public function removeIncident(Incident $incident): static
     {
         if ($this->incidents->removeElement($incident)) {
-            // set the owning side to null (unless already changed)
             if ($incident->getBien() === $this) {
                 $incident->setBien(null);
             }
         }
 
+        return $this;
+    }
+
+    /** @return Collection<int, BienPhoto> */
+    public function getPhotos(): Collection
+    {
+        return $this->photos;
+    }
+
+    public function addPhoto(BienPhoto $photo): static
+    {
+        if (!$this->photos->contains($photo)) {
+            $this->photos->add($photo);
+            $photo->setBien($this);
+        }
+        return $this;
+    }
+
+    public function removePhoto(BienPhoto $photo): static
+    {
+        if ($this->photos->removeElement($photo)) {
+            if ($photo->getBien() === $this) {
+                $photo->setBien(null);
+            }
+        }
         return $this;
     }
 }

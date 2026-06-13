@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GESTLOYER - Guide d'Utilisation Complet</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --primary: #14b8a6;
+            --accent: #f59e0b;
+            --success: #22c55e;
+            --border-color: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            background-color: #020617;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+            padding: 20px 10px;
+            box-sizing: border-box;
+        }
+
+        .sidebar h2 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            color: var(--text-primary);
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--primary);
+        }
+
+        /* Main Content */
+        .content {
+            margin-left: 280px;
+            padding: 40px;
+            max-width: 900px;
+            box-sizing: border-box;
+            width: calc(100% - 280px);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.6rem;
+            margin-top: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            color: var(--accent);
+            font-size: 1.25rem;
+            margin-top: 25px;
+        }
+
+        p {
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .screenshot-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        .screenshot-container img {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid #475569;
+        }
+
+        .screenshot-container .caption {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-role {
+            background-color: var(--primary);
+            color: #0f172a;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>GESTLOYER</h2>
+        <a href="#intro">1. Introduction & Espace d'Accès</a>
+        <a href="#admin">2. Guide de l'Administrateur</a>
+        <a href="#gestionnaire">3. Guide du Gestionnaire</a>
+        <a href="#comptable">4. Guide du Comptable</a>
+        <a href="#proprietaire">5. Guide du Propriétaire</a>
+        <a href="#locataire">6. Guide du Locataire</a>
+    </div>
+
+    <div class="content">
+        <h1>Guide d'Utilisation Complet - GESTLOYER</h1>
+        <p>Ce guide interactif présente toutes les fonctionnalités de l'application de gestion locative immobilière <strong>GESTLOYER</strong> pour chaque type d'utilisateur.</p>
+
+        <section id="intro">
+            <h2>1. Introduction & Espace d'Accès</h2>
+            <p>La plateforme GESTLOYER propose des interfaces distinctes pour tous les acteurs de la gestion locative. Elle permet d'assurer un suivi complet des biens, des baux, des paiements et des incidents de maintenance.</p>
+            
+            <h3>1.1 Page d'Accueil Publique (Landing Page)</h3>
+            <p>La page d'accueil présente la méthode GestLoyer ainsi que les quatre piliers de la solution.</p>
+            
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_1043_127.0.0.1.jpeg" alt="Page d'accueil">
+                <span class="caption">Figure 1 : Haut de la page d'accueil.</span>
+            </div>
+            
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_1055_127.0.0.1.jpeg" alt="Services">
+                <span class="caption">Figure 2 : Section des fonctionnalités clés.</span>
+            </div>
+
+            <h3>1.2 Page de Connexion (Login)</h3>
+            <p>Tous les utilisateurs se connectent via une interface unique avec leur adresse email et mot de passe.</p>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_10528_127.0.0.1.jpeg" alt="Connexion">
+                <span class="caption">Figure 3 : Interface de Connexion.</span>
+            </div>
+
+            <h3>1.3 Création de Compte</h3>
+            <p>Les propriétaires et locataires peuvent créer leur propre compte directement depuis l'application.</p>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_10441_127.0.0.1.jpeg" alt="Inscription">
+                <span class="caption">Figure 4 : Formulaire de création de compte.</span>
+            </div>
+        </section>
+
+        <section id="admin">
+            <h2>2. Guide de l'Administrateur <span class="badge badge-role">ROLE_ADMIN</span></h2>
+            <p>L'administrateur supervise l'intégralité du parc et configure les paramètres de l'agence.</p>
+            
+            <h3>2.1 Tableau de Bord Analytique</h3>
+            <p>Le dashboard administrateur affiche le taux d'occupation, les loyers perçus, les impayés et les incidents.</p>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_10556_127.0.0.1.jpeg" alt="Dashboard Admin">
+                <span class="caption">Figure 5 : Tableau de bord analytique principal.</span>
+            </div>
+
+            <h3>2.2 Configuration & Paramètres Globaux</h3>
+            <p>Permet de configurer les informations de l'agence, gérer l'équipe (comptables et gestionnaires), consulter l'historique d'audit des connexions et archiver les utilisateurs.</p>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_1070_127.0.0.1.jpeg" alt="Configuration Admin">
+                <span class="caption">Figure 6 : Module d'administration complet.</span>
+            </div>
+        </section>
+
+        <section id="gestionnaire">
+            <h2>3. Guide du Gestionnaire <span class="badge badge-role">ROLE_GESTIONNAIRE</span></h2>
+            <p>Le gestionnaire pilote la gestion opérationnelle quotidienne du parc immobilier et des baux.</p>
+
+            <h3>3.1 Tableau de Bord du Gestionnaire</h3>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_102255_127.0.0.1.jpeg" alt="Dashboard Gestionnaire">
+                <span class="caption">Figure 7 : Dashboard du gestionnaire.</span>
+            </div>
+
+            <h3>3.2 Gestion des Biens</h3>
+            <p>Le gestionnaire peut voir la grille des biens et en ajouter de nouveaux en précisant leur type, surface et propriétaire.</p>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_102131_127.0.0.1.jpeg" alt="Liste des biens">
+                <span class="caption">Figure 8 : Grille des biens immobiliers.</span>
+            </div>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_102347_127.0.0.1.jpeg" alt="Ajouter un bien">
+                <span class="caption">Figure 9 : Formulaire d'ajout de bien.</span>
+            </div>
+
+            <h3>3.3 Gestion des Contrats</h3>
+            <p>Le gestionnaire gère les contrats de location actifs, expirés ou résiliés.</p>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_102534_127.0.0.1.jpeg" alt="Liste des contrats">
+                <span class="caption">Figure 10 : Liste des contrats.</span>
+            </div>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_102320_127.0.0.1.jpeg" alt="Nouveau contrat">
+                <span class="caption">Figure 11 : Formulaire de création de bail.</span>
+            </div>
+        </section>
+
+        <section id="comptable">
+            <h2>4. Guide du Comptable <span class="badge badge-role">ROLE_COMPTABLE</span></h2>
+            <p>Le comptable gère les paiements de loyers et valide les règlements pour émettre les quittances.</p>
+
+            <h3>4.1 Tableau de Bord Comptable</h3>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_102021_127.0.0.1.jpeg" alt="Dashboard Comptable">
+                <span class="caption">Figure 12 : Dashboard du comptable.</span>
+            </div>
+
+            <h3>4.2 Validation des Règlements</h3>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_10211_127.0.0.1.jpeg" alt="Suivi paiements">
+                <span class="caption">Figure 13 : Suivi et validation des paiements.</span>
+            </div>
+        </section>
+
+        <section id="proprietaire">
+            <h2>5. Guide du Propriétaire <span class="badge badge-role">ROLE_PROPRIETAIRE</span></h2>
+            <p>Le propriétaire suit la rentabilité de ses investissements immobiliers et gère son compte de reversements.</p>
+
+            <h3>5.1 Tableau de Bord du Propriétaire</h3>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_10298_127.0.0.1.jpeg" alt="Dashboard Propriétaire">
+                <span class="caption">Figure 14 : Dashboard propriétaire (Patrimoine et Revenus).</span>
+            </div>
+
+            <h3>5.2 Coordonnées & Profil</h3>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_102042_127.0.0.1.jpeg" alt="Profil propriétaire">
+                <span class="caption">Figure 15 : Formulaire de modification de profil.</span>
+            </div>
+        </section>
+
+        <section id="locataire">
+            <h2>6. Guide du Locataire <span class="badge badge-role">ROLE_LOCATAIRE</span></h2>
+            <p>Le locataire accède à ses quittances, son historique et déclare ses incidents.</p>
+
+            <h3>6.1 Tableau de Bord du Locataire</h3>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_104032_127.0.0.1.jpeg" alt="Dashboard Locataire">
+                <span class="caption">Figure 16 : Dashboard du locataire (Bail, Paiements et Biens disponibles).</span>
+            </div>
+
+            <h3>6.2 Déclaration d'Incident</h3>
+            <p>Permet de signaler une panne ou fuite au gestionnaire.</p>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_104124_127.0.0.1.jpeg" alt="Déclarer incident">
+                <span class="caption">Figure 17 : Formulaire de déclaration de panne.</span>
+            </div>
+
+            <h3>6.3 Préférences du Compte</h3>
+            <p>Permet de changer de thème (Clair / Sombre) et de changer la langue (Français / Anglais).</p>
+            <div class="screenshot-container">
+                <img src="../Documentation complète en symfony/Document en symfony/Capture d’écran_13-6-2026_10635_127.0.0.1.jpeg" alt="Thème et Langue">
+                <span class="caption">Figure 18 : Configuration du profil personnel.</span>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>

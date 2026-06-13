@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CSV Management{% endblock %}
+
+{% block body %}
+<div class="relative">
+  <!-- Sticky top bar with action/entity selectors -->
+  <div class="sticky top-0 z-20 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-opacity-80 backdrop-blur-lg shadow-lg">
+    <form method="GET" class="max-w-7xl mx-auto flex flex-wrap items-center gap-4 p-4">
+      <div class="flex items-center gap-2 text-white">
+        <label class="font-medium">Action</label>
+        <select name="action" class="rounded-md p-2 text-gray-900" onchange="this.form.submit()">
+          <option value="export" {% if action == 'export' %}selected{% endif %}>Export</option>
+          <option value="import" {% if action == 'import' %}selected{% endif %}>Import</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2 text-white">
+        <label class="font-medium">Entity</label>
+        <select name="entity" class="rounded-md p-2 text-gray-900" onchange="this.form.submit()">
+          <option value="">-- select entity --</option>
+          {% for class, label in entities %}
+            <option value="{{ class }}" {% if entity == class %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </form>
+  </div>
+
+  <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    {% if message %}
+      <div class="p-4 mb-4 rounded-xl bg-green-100 text-green-800 shadow">{{ message }}</div>
+    {% endif %}
+
+    {% if action == 'import' and entity %}
+      <div class="bg-white/80 backdrop-blur-md glass-panel rounded-xl p-6 shadow-lg max-w-md mx-auto">
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Import CSV for {{ entities[entity] ?? entity }}</h2>
+        <form method="POST" enctype="multipart/form-data" class="flex items-center gap-3">
+          <input type="file" name="csv_file" accept=".csv" required class="rounded-md border-gray-300 p-2 flex-1"/>
+          <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl hover:scale-105 transform transition">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            Import CSV
+          </button>
+        </form>
+      </div>
+    {% endif %}
+
+    {% if action == 'export' and entity %}
+      <div class="flex justify-center mt-8">
+        <a href="{{ path('admin_csv', {action:'export', entity: entity}) }}"
+           class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl hover:scale-105 transform transition">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5h6M9 9h6M9 13h6M9 17h6"/></svg>
+          Export CSV for {{ entities[entity] ?? entity }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

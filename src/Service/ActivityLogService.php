@@ -38,6 +38,19 @@ class ActivityLogService
         $log->setUrl($request?->getUri());
         $log->setIsSeen(false);
 
+        // Capture du payload (données de formulaire) pour les requêtes POST/PUT/PATCH
+        if ($request && in_array($request->getMethod(), ['POST', 'PUT', 'PATCH'])) {
+            $payload = $request->request->all();
+            
+            // Suppression des données sensibles
+            $sensitiveKeys = ['password', '_password', 'token', '_token', 'csrf'];
+            $cleanPayload = $this->sanitizePayload($payload, $sensitiveKeys);
+            
+            if (!empty($cleanPayload)) {
+                $log->setPayload($cleanPayload);
+            }
+        }
+
         $this->entityManager->persist($log);
         try {
             $this->entityManager->flush();
@@ -45,6 +58,28 @@ class ActivityLogService
             // Migration not executed yet; do not break the app.
             $this->entityManager->clear();
         }
+    }
+    private function sanitizePayload(array $payload, array $sensitiveKeys): array
+    {
+        $sanitized = [];
+        foreach ($payload as $key => $value) {
+            $isSensitive = false;
+            foreach ($sensitiveKeys as $sensitive) {
+                if (stripos((string)$key, $sensitive) !== false) {
+                    $isSensitive = true;
+                    break;
+                }
+            }
+            
+            if ($isSensitive) {
+                $sanitized[$key] = '***';
+            } elseif (is_array($value)) {
+                $sanitized[$key] = $this->sanitizePayload($value, $sensitiveKeys);
+            } else {
+                $sanitized[$key] = $value;
+            }
+        }
+        return $sanitized;
     }
 }
 

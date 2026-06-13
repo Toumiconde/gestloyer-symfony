@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion des Utilisateurs — Admin GESTLOYER{% endblock %}
+{% block title %}{{ 'admin.users.title'|trans }} — Admin GESTLOYER{% endblock %}
 
 {% block body %}
-<div class="min-h-screen themed-page bg-slate-50 dark:bg-slate-950">
+<div class="min-h-screen themed-page bg-slate-50 dark:bg-slate-50 dark:bg-slate-950">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {# ── HEADER ─────────────────────────────────────────────── #}
@@ -15,83 +15,80 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                         </svg>
                     </div>
-                    <h1 class="text-2xl font-bold text-white">Gestion des Utilisateurs
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">{{ 'admin.users.title'|trans }}
                         <span class="ml-2 text-sm font-normal px-2.5 py-1 rounded-full align-middle" style="background: rgba(99,102,241,0.15); color: #a5b4fc;">{{ users|length }} résultat{{ users|length > 1 ? 's' : '' }}</span>
                     </h1>
                 </div>
-                <p class="text-slate-500 text-sm mt-1">Créer, modifier, activer ou désactiver les comptes utilisateurs</p>
+                <p class="text-slate-500 text-sm mt-1">{{ 'admin.users.subtitle'|trans }}</p>
             </div>
             <div class="flex gap-3 flex-shrink-0">
                 <a href="{{ path('app_admin_index') }}"
-                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white transition-all border border-white/10 hover:border-white/20 hover:bg-white/5">
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-white transition-all border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:border-white/20 hover:bg-slate-100 dark:hover:bg-slate-100 dark:bg-white/5">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                     </svg>
-                    Panel Admin
+                    {{ 'settings.back'|trans }}
                 </a>
                 <a href="{{ path('app_admin_user_new') }}"
-                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5"
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-900 dark:text-white transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 hover:-translate-y-0.5"
                    style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
-                    Nouvel utilisateur
+                    {{ 'admin.users.btn_add'|trans }}
                 </a>
             </div>
         </div>
 
         {# ── FILTERS ─────────────────────────────────────────────── #}
-        <form method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-4 rounded-2xl" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+        <form method="GET" class="flex flex-wrap items-center gap-3 mb-6 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
             <div class="relative flex-1 min-w-52">
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                 </svg>
-                <input type="text" name="q" value="{{ search ?? '' }}" placeholder="Rechercher par email..."
-                       class="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-white placeholder-slate-500 transition focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                       style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
+                <input type="text" name="q" value="{{ search ?? '' }}" placeholder="{{ 'admin.users.search_placeholder'|trans }}"
+                       class="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-500 transition focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
             </div>
             <select name="role"
-                    class="px-4 py-2.5 rounded-xl text-sm text-white transition"
-                    style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
-                <option value="">Tous les rôles</option>
+                    class="px-4 py-2.5 rounded-xl text-sm text-slate-900 dark:text-white transition bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <option value="">{{ 'admin.users.filter_all'|trans }}</option>
                 {% for r in roles %}
                     <option value="{{ r.value }}" {% if role == r.value %}selected{% endif %}>{{ r.value|replace({'ROLE_': ''}) }}</option>
                 {% endfor %}
             </select>
             <select name="actif"
-                    class="px-4 py-2.5 rounded-xl text-sm text-white transition"
-                    style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">
-                <option value="">Tout statut</option>
-                <option value="1" {% if actif == '1' %}selected{% endif %}>Actifs</option>
-                <option value="0" {% if actif == '0' %}selected{% endif %}>Inactifs</option>
+                    class="px-4 py-2.5 rounded-xl text-sm text-slate-900 dark:text-white transition bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <option value="">{{ 'admin.users.filter_status'|trans }}</option>
+                <option value="1" {% if actif == '1' %}selected{% endif %}>{{ 'admin.users.filter_active'|trans }}</option>
+                <option value="0" {% if actif == '0' %}selected{% endif %}>{{ 'admin.users.filter_inactive'|trans }}</option>
             </select>
             <button type="submit"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white transition"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-slate-900 dark:text-white transition"
                     style="background: #6366f1;">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
                 </svg>
-                Filtrer
+                {{ 'admin.users.filter_btn'|trans }}
             </button>
             <a href="{{ path('app_admin_users') }}"
-               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-slate-400 hover:text-white transition border border-white/10 hover:border-white/20">
+               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white transition border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:border-white/20">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                Effacer
+                {{ 'admin.users.clear_btn'|trans }}
             </a>
         </form>
 
         {# ── USER TABLE ───────────────────────────────────────────── #}
-        <div class="rounded-2xl overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08);">
+        <div class="rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
             <table class="w-full">
                 <thead>
                     <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.08);">
-                        <th class="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Utilisateur</th>
-                        <th class="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Rôle</th>
-                        <th class="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Statut</th>
-                        <th class="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Inscription</th>
-                        <th class="text-right px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                        <th class="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'admin.users.col_user'|trans }}</th>
+                        <th class="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'admin.users.col_role'|trans }}</th>
+                        <th class="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'admin.users.col_status'|trans }}</th>
+                        <th class="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'admin.users.col_date'|trans }}</th>
+                        <th class="text-right px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'admin.users.col_actions'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y" style="divide-color: rgba(255,255,255,0.05);">
@@ -109,12 +106,12 @@
                         {# User info #}
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold text-white flex-shrink-0 shadow-lg"
+                                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold text-slate-900 dark:text-white flex-shrink-0 shadow-lg"
                                      style="background: linear-gradient(135deg, {{ color }}aa, {{ color }}55);">
                                     {{ user.email|first|upper }}
                                 </div>
                                 <div>
-                                    <div class="text-sm font-medium text-white">{{ user.email }}</div>
+                                    <div class="text-sm font-medium text-slate-900 dark:text-white">{{ user.email }}</div>
                                     <div class="text-xs text-slate-600 mt-0.5">ID #{{ user.id }}</div>
                                 </div>
                             </div>
@@ -131,8 +128,7 @@
                                     {% endfor %}
                                 </select>
                                 <button type="submit" title="Appliquer"
-                                        class="w-6 h-6 rounded-md flex items-center justify-center text-slate-400 hover:text-white transition"
-                                        style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);">
+                                        class="w-6 h-6 rounded-md flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white transition bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                     </svg>
@@ -152,7 +148,7 @@
                                     {% endif %}
                                 </span>
                                 <span class="text-xs font-medium {% if user.isIsActive %}text-emerald-400{% else %}text-slate-500{% endif %}">
-                                    {% if user.isIsActive %}Actif{% else %}Inactif{% endif %}
+                                    {% if user.isIsActive %}{{ 'admin.users.status_active'|trans }}{% else %}{{ 'admin.users.status_inactive'|trans }}{% endif %}
                                 </span>
                             </div>
                         </td>
@@ -162,18 +158,18 @@
                             {{ user.createdAt ? user.createdAt|date('d/m/Y') : 'N/A' }}
                         </td>
 
-                        {# Actions #}
+                        {# {{ 'admin.users.col_actions'|trans }} #}
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-end gap-2">
 
                                 {# Edit #}
                                 <a href="{{ path('app_admin_user_edit', {id: user.id}) }}"
-                                   class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg text-blue-300 hover:text-white transition"
+                                   class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg text-blue-300 hover:text-slate-900 dark:text-white transition"
                                    style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);">
                                     <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
                                     </svg>
-                                    Éditer
+                                    {{ 'admin.users.btn_edit'|trans }}
                                 </a>
 
                                 {# Toggle #}
@@ -181,14 +177,14 @@
                                     <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ user.id) }}">
                                     <button type="submit"
                                             class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition
-                                            {% if user.isIsActive %}text-amber-300 hover:text-white{% else %}text-emerald-300 hover:text-white{% endif %}"
+                                            {% if user.isIsActive %}text-amber-300 hover:text-white{% else %}text-emerald-300 hover:text-slate-900 dark:text-white{% endif %}"
                                             style="background: {% if user.isIsActive %}rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.2){% else %}rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.2){% endif %};">
                                         {% if user.isIsActive %}
                                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
-                                        Désactiver
+                                        {{ 'admin.users.btn_deactivate'|trans }}
                                         {% else %}
                                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
-                                        Activer
+                                        {{ 'admin.users.btn_activate'|trans }}
                                         {% endif %}
                                     </button>
                                 </form>
@@ -198,20 +194,20 @@
                                       onsubmit="return confirm('Reinitialiser le mot de passe de {{ user.email }} ?')">
                                     <input type="hidden" name="_token" value="{{ csrf_token('reset_password' ~ user.id) }}">
                                     <button type="submit"
-                                            class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg text-indigo-300 hover:text-white transition"
+                                            class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg text-indigo-300 hover:text-slate-900 dark:text-white transition"
                                             style="background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.2);">
-                                        Reset MDP
+                                        {{ 'admin.users.btn_reset'|trans }}
                                     </button>
                                 </form>
 
                                 {# Archive #}
                                 {% if user != app.user %}
                                 <form method="POST" action="{{ path('app_admin_user_delete', {id: user.id}) }}" class="inline"
-                                      onsubmit="return confirm('Archiver {{ user.email }} ? Le compte sera desactive.')">
+                                      onsubmit="return confirm('{{ 'admin.users.btn_archive'|trans }} {{ user.email }} ? Le compte sera desactive.')">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
                                     <button type="submit"
-                                            class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-rose-400 hover:text-white transition"
-                                            title="Archiver"
+                                            class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-rose-400 hover:text-slate-900 dark:text-white transition"
+                                            title="{{ 'admin.users.btn_archive'|trans }}"
                                             style="background: rgba(244,63,94,0.12); border: 1px solid rgba(244,63,94,0.2);">
                                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
@@ -226,13 +222,13 @@
                     <tr>
                         <td colspan="5" class="px-6 py-20 text-center">
                             <div class="flex flex-col items-center gap-3">
-                                <div class="w-16 h-16 rounded-2xl flex items-center justify-center" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                                <div class="w-16 h-16 rounded-2xl flex items-center justify-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm">
                                     <svg class="w-8 h-8 text-slate-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                                     </svg>
                                 </div>
-                                <p class="text-slate-400 font-medium">Aucun utilisateur trouvé</p>
-                                <p class="text-slate-600 text-sm">Modifiez vos critères de recherche</p>
+                                <p class="text-slate-600 dark:text-slate-400 font-medium">{{ 'admin.users.empty'|trans }}</p>
+                                <p class="text-slate-600 text-sm">{{ 'admin.users.empty_desc'|trans }}</p>
                             </div>
                         </td>
                     </tr>
