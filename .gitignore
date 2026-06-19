@@ -28,3 +28,4 @@ yarn-error.log
 ".env.local" 
 "var/" 
 "public/build/" 
+".env.local" 
